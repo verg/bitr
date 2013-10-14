@@ -4,7 +4,10 @@ GEM
     bencode (0.8.0)
     coderay (1.0.9)
     diff-lcs (1.2.4)
+    faraday (0.8.8)
+      multipart-post (~> 1.2.0)
     method_source (0.8.2)
+    multipart-post (1.2.0)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -24,5 +27,6 @@ PLATFORMS
 
 DEPENDENCIES
   bencode
+  faraday
   pry
   rspec
