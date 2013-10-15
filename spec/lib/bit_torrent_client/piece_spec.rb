@@ -12,5 +12,7 @@ module BitTorrentClient
       nineteen_bit_sha = %[\x12\x34\x56\x78\x9a\xbc\xde\xf1\x23\x45\x67\x89\xab\xcd\xef\x12\x34\x56\x78]
       expect { Piece.new(nineteen_bit_sha) }.to raise_error ArgumentError
     end
+
+    it "has a status"
   end
 end
