@@ -1,8 +1,12 @@
 require_relative "../../../lib/bit_torrent_client/metainfo"
+require_relative "../../../lib/bit_torrent_client/info_dictionary"
+require_relative "../../../lib/bit_torrent_client/piece"
+require_relative "../../../lib/bit_torrent_client/downloadable_file"
 
 module BitTorrentClient
   describe Metainfo do
-    let(:pieces) { double("pieces") }
+    let(:pieces) { "\x12\x34\x56\x78\x9a\xbc\xde\xf1\x23\x45\x67\x89\xab\xcd\xef\x12\x34\x56\x78\x9a".encode('UTF-8', 'binary', invalid: :replace, undef: :replace)}
+
     let (:metainfo_hash) { {"announce"=>"http://example.com:6969/announce",
                             "created by"=>"uTorrent/1640",
                             "creation date"=>1350935447,
@@ -34,38 +38,12 @@ module BitTorrentClient
       expect(metainfo.encoding).to eq "UTF-8"
     end
 
-    describe "Info Dictionary" do
-      it "lists the number of bytes in each piece" do
-        metainfo = Metainfo.new(metainfo_hash)
-        expect(metainfo.piece_length).to eq 16384
-      end
-
-      it "lists the pieces" do
-        metainfo = Metainfo.new(metainfo_hash)
-        expect(metainfo.pieces).to eq pieces
-      end
-
-      context "single file torrents" do
-        it "has the torrent's filename" do
-          metainfo = Metainfo.new(metainfo_hash)
-          expect(metainfo.filename).to eq "flag.jpg"
-        end
-
-        it "has the length of the file in bytes" do
-          metainfo = Metainfo.new(metainfo_hash)
-          expect(metainfo.filelength).to eq 1277987
-        end
-      end
-
-      #TODO handle torrents with multiple files (don't currently have a ex torrent)
-      context "multi-file torrents" do
-        it "has the name of the file path of the dir which stores the files"
-        it "it has a list of dictionaries for each file"
-        context "file dictionaries" do
-          it "has the length of the file"
-          it "holds the path of the file"
-        end
-      end
+    it "creates an InfoDictonary with the file information" do
+      InfoDictionary.should_receive(:new).with( {"length"=>1277987,
+                                                "name"=>"flag.jpg",
+                                                "piece length"=>16384,
+                                                "pieces"=> pieces })
+      Metainfo.new(metainfo_hash)
     end
   end
 end
