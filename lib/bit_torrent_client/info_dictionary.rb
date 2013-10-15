@@ -7,7 +7,6 @@ module BitTorrentClient
       @name = args.fetch("name")
       @pieces_string = args.fetch("pieces")
       @pieces = create_pieces(@pieces_string)
-      # @filelength = args.fetch("length")
       @files = create_files(args)
     end
 
