@@ -1,0 +1,38 @@
+module BitTorrentClient
+  class InfoDictionary
+    attr_reader :pieces_string, :piece_length, :name, :filelength, :pieces, :files
+
+    def initialize(args)
+      @piece_length = args.fetch("piece length")
+      @name = args.fetch("name")
+      @pieces_string = args.fetch("pieces")
+      @pieces = create_pieces(@pieces_string)
+      # @filelength = args.fetch("length")
+      @files = create_files(args)
+    end
+
+    private
+
+    def create_pieces(pieces_string)
+      split_by_twenty_bits(pieces_string).map do |twenty_bit_sha|
+        Piece.new(twenty_bit_sha)
+      end
+    end
+
+    def split_by_twenty_bits(string)
+      string.scan(/.{20}/)
+    end
+
+    def create_files(args)
+      if args.has_key?('files')
+        args['files'].map do |file|
+          name = file['path'].last
+          directories = file['path'].take(file['path'].size - 1)
+          DownloadableFile.new(name, directories, file['length'])
+        end
+      else
+        [DownloadableFile.new(@name, args['length'])]
+      end
+    end
+  end
+end
