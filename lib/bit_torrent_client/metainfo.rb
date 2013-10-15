@@ -9,21 +9,5 @@ module BitTorrentClient
       @encoding = args["encoding"]
       @info_dictionary = InfoDictionary.new(args['info'])
     end
-
-    def pieces
-      @info_dictionary.pieces
-    end
-
-    def piece_length
-      @info_dictionary.piece_length
-    end
-
-    def filename
-      @info_dictionary.filename
-    end
-
-    def filelength
-      @info_dictionary.filelength
-    end
   end
 end
