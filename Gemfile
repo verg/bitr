@@ -7,3 +7,5 @@ gem "bencode"
 
 gem "rspec"
 gem "pry"
+gem "vcr"
+gem "webmock"
