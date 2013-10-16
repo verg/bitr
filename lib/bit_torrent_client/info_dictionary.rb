@@ -27,10 +27,10 @@ module BitTorrentClient
         args['files'].map do |file|
           name = file['path'].last
           directories = file['path'].take(file['path'].size - 1)
-          DownloadableFile.new(name, directories, file['length'])
+          DownloadableFile.new("byte_size" => file['length'], "filename" => name, "directories" => directories)
         end
       else
-        [DownloadableFile.new(@name, args['length'])]
+        [ DownloadableFile.new("byte_size" => args['length'], "filename" => @name) ]
       end
     end
   end
