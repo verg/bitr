@@ -13,5 +13,8 @@ module BitTorrentClient
     it "parses multifile torrents" do
       MetainfoParser.parse(multifile_torrent)
     end
+
+    it "can parse a torrent string"
+    it "can parse a torrent file"
   end
 end
