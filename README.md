@@ -1,1 +1,3 @@
-Bitr
+## Bitr
+
+Is a BitTorrent client
