@@ -14,6 +14,7 @@ module BitTorrentClient
       uri = URI(metainfo.announce)
       uri.query = URI.encode_www_form(request_params)
       response = Net::HTTP.get_response(uri)
+      AnnounceResponse.new(response.body)
     end
 
     private

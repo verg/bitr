@@ -15,10 +15,12 @@ module BitTorrentClient
           metainfo.stub(:downloaded_bytes) { 0 }
           metainfo.stub(:bytes_left) { 16384 }
 
-          http_client = HTTPClient.new(peer_id)
-          expect(http_client.get_start_event(metainfo).code).to eq "200"
+          response= HTTPClient.new(peer_id).get_start_event(metainfo)
+          expect(response).to be_instance_of AnnounceResponse
         end
       end
+
+      it "handles bad requests"
 
       describe "uploaded and downloaded stats" do
         it "sends the number of bytes downloaded since the client sent the 'started' event"
