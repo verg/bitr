@@ -9,7 +9,7 @@ module BitTorrentClient
         VCR.use_cassette("get_torrent_start_event") do
           torrent_file = File.read("spec/fixtures/flagfromserver.torrent")
           metainfo = Metainfo.new(MetainfoParser.parse(torrent_file))
-          peer_id = "-RV0001-000000000001"
+          peer_id = "-RV0001-000000000002"
 
           metainfo.stub(:uploaded_bytes) { 0 }
           metainfo.stub(:downloaded_bytes) { 0 }
