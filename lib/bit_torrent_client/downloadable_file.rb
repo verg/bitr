@@ -2,10 +2,10 @@ module BitTorrentClient
   class DownloadableFile
     attr_reader :filename, :byte_size, :directories
 
-    def initialize(filename, directories=[], byte_size)
-      @filename = filename
-      @directories = directories
-      @byte_size = byte_size
+    def initialize(args)
+      @filename = args.fetch("filename")
+      @directories = args.fetch("directories") { [] }
+      @byte_size = args.fetch("byte_size")
     end
 
     def full_path
