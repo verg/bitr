@@ -2,7 +2,8 @@ require 'bencode'
 
 module BitTorrentClient
   class Metainfo
-    attr_reader :announce, :creation_date, :created_by, :encoding, :info_hash
+    attr_reader :announce, :creation_date, :created_by, :encoding, :info_hash,
+      :uri_encoded_info_hash
 
     def initialize(args)
       @announce = args.fetch("announce")
@@ -11,6 +12,7 @@ module BitTorrentClient
       @encoding = args["encoding"]
       @info_dictionary = args['info_dictionary'] || InfoDictionary.new(args['info'])
       @info_hash = create_info_hash(args['info'])
+      @uri_encoded_info_hash = URI.encode(@info_hash)
     end
 
     def pieces

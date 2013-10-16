@@ -23,6 +23,7 @@ module BitTorrentClient
       expect(metainfo.announce).to eq "http://example.com:6969/announce"
     end
 
+
     it "optionally lists where it was created" do
       metainfo = Metainfo.new(metainfo_hash)
       expect(metainfo.created_by).to eq "uTorrent/1640"
@@ -49,6 +50,11 @@ module BitTorrentClient
     it "stores an info hash as a SHA1 of the value of the bencoded info key" do
       metainfo = Metainfo.new(metainfo_hash)
       expect(metainfo.info_hash.size).to eq 20
+    end
+
+    it "stores a URI encoded info hash of the info hash" do
+      metainfo = Metainfo.new(metainfo_hash)
+      expect(metainfo.uri_encoded_info_hash).to eq "%E5%8F%CA%C55%AB%13H-%96%C1W%FA1%1A3/k%FA%86"
     end
 
     it "has pieces through it's info dictionary" do
