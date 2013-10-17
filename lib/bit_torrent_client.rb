@@ -6,6 +6,7 @@ require_relative "bit_torrent_client/piece"
 require_relative "bit_torrent_client/peer"
 require_relative "bit_torrent_client/downloadable_file"
 require_relative "bit_torrent_client/announce_response"
+require_relative "bit_torrent_client/tcp_client"
 
 module BitTorrentClient
 end
