@@ -5,7 +5,7 @@ class MessageParser
 
   def initialize(message)
     @message = message
-    @length = @message[0..3].unpack("C*").join("").to_i
+    @length = @message[0..3].unpack("N").first
   end
 
   def get_type
