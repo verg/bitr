@@ -19,7 +19,7 @@ module BitTorrentClient
       peers.map! { |peer| Peer.new(peer) }
       socket = TCPClient.new(peers[1], peer_id, metainfo.info_hash)
       data = socket.send_handshake
-      expect(handle_encoding(data)).to match /BitTorrent protocol/
+      expect(handle_encoding(data)).to match(/BitTorrent protocol/)
     end
 
     def handle_encoding(string)
