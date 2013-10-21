@@ -8,19 +8,18 @@ class TCPClient
   def send_handshake
     socket = TCPSocket.new(@peer.ip, @peer.port)
     socket.write handshake_message
-    byte = socket.getbyte
+    # byte = socket.getbyte
     data = socket.read
-    socket.close
     data
   end
 
   def handshake_message
     {
-      pstrlen:    '\x13',
-      pstr:       'BitTorrent protocol',
-      reserved:   '\x00\x00\x00\x00\x00\x00\x00\x00',
-      info_hash:  URI.encode_www_form_component(@info_hash),
-      peer_id:    @client_id
-    }.values.join('')
+      pstrlen:    "\x13",
+      pstr:       "BitTorrent protocol",
+      reserved:   "\x00\x00\x00\x00\x00\x00\x00\x00",
+      info_hash:  "#{@info_hash}",
+      peer_id:    "#{@client_id}"
+    }.values.join("")
   end
 end
