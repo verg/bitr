@@ -1,4 +1,7 @@
 class TCPClient
+
+  SIXTEEN_KB = 1024 * 16
+
   def initialize(peer, client_id, info_hash)
     @peer = peer
     @client_id = client_id
@@ -9,7 +12,12 @@ class TCPClient
     socket = TCPSocket.new(@peer.ip, @peer.port)
     socket.write handshake_message
     # byte = socket.getbyte
-    data = socket.read
+    begin
+      data = socket.read_nonblock(SIXTEEN_KB)
+    rescue Errno::EAGAIN
+      retry
+    end
+
     data
   end
 

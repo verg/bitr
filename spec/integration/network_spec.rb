@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require_relative "../../lib/bit_torrent_client"
 require_relative "../vcr_helper"
 require 'vcr'
@@ -18,8 +19,11 @@ module BitTorrentClient
       peers.map! { |peer| Peer.new(peer) }
       socket = TCPClient.new(peers[1], peer_id, metainfo.info_hash)
       data = socket.send_handshake
-      expect(data).to eq 'something'
+      expect(handle_encoding(data)).to match /BitTorrent protocol/
+    end
+
+    def handle_encoding(string)
+      string.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'})
     end
   end
-
 end
