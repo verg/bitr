@@ -1,4 +1,4 @@
-module BitTorrent
+module BitTorrentClient
   class MessageHandler
     attr_reader :stream, :handshook
     alias :handshook? :handshook
