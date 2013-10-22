@@ -10,6 +10,7 @@ require_relative "bit_torrent_client/tcp_client"
 require_relative "bit_torrent_client/message_builder"
 require_relative "bit_torrent_client/message"
 require_relative "bit_torrent_client/message_parser"
+require_relative "bit_torrent_client/message_handler"
 
 module BitTorrentClient
 end
