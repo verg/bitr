@@ -1,12 +1,8 @@
 require_relative "../../../lib/bit_torrent_client/message_handler"
+require_relative "../../../lib/bit_torrent_client/message"
 require_relative "../../spec_helper"
 
 module BitTorrentClient
-  class Message
-    def initialize(string)
-    end
-  end
-
   describe MessageHandler do
 
     let(:empty_message_handler) { MessageHandler.new }
