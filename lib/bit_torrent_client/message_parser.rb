@@ -34,6 +34,5 @@ module BitTorrentClient
     def payload
       @message[5..-1] || ''
     end
-
   end
 end
