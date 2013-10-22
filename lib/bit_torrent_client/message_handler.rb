@@ -3,23 +3,25 @@ module BitTorrent
     attr_reader :stream, :handshook
     alias :handshook? :handshook
 
-    def initialize(stream="")
-      @handshook = false
-      @stream = stream
+    def initialize(opts={})
+      @handshook = opts.fetch(:handshook) { false }
+      @stream = ""
       @parsed_messages = []
     end
 
-    def parse
+    def handle(data)
+      @stream << data
       handle_handshake
-      if full_message_available?
-        message_string = @stream.slice!(0...full_length)
-        @parsed_messages << Message.new(message_string)
-      end
-      if full_message_available?
+
+      while full_message_available?
         parse
-      else
-        dequeue_messages
       end
+      dequeue_messages
+    end
+
+    def parse
+      message_string = @stream.slice!(0...full_length)
+      @parsed_messages << Message.new(message_string)
     end
 
     def dequeue_messages
@@ -41,7 +43,7 @@ module BitTorrent
     end
 
     def handle_handshake
-      unless @handshook
+      if !handshook? && @stream.length >= 68
         @stream.slice!(0..67)
         @handshook = true
       end
