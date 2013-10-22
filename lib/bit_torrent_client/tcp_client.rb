@@ -22,13 +22,8 @@ module BitTorrentClient
     end
 
     def handshake_message
-      {
-        pstrlen:    "\x13",
-        pstr:       "BitTorrent protocol",
-        reserved:   "\x00\x00\x00\x00\x00\x00\x00\x00",
-        info_hash:  "#{@info_hash}",
-        peer_id:    "#{@client_id}"
-      }.values.join("")
+      MessageBuilder.build(:handshake, info_hash: @info_hash,
+                           client_id: @client_id).to_s
     end
   end
 end
