@@ -2,7 +2,18 @@ module BitTorrentClient
   class MessageParser
     attr_reader :length, :type
 
-    MESSAGE_TYPES  = { 5 => :bitfield }
+    MESSAGE_TYPES  = {
+      0 => :choke,
+      1 => :unchoke,
+      2 => :interested,
+      3 => :not_interested,
+      4 => :have,
+      5 => :bitfield,
+      6 => :request,
+      7 => :piece,
+      8 => :cancel,
+      9 => :port
+    }
 
     def initialize(message)
       @message = message
@@ -17,7 +28,12 @@ module BitTorrentClient
       return :keep_alive if @length == 0
 
       id = @message[4].unpack("C").first
-      MESSAGE_TYPES[id]
+      MESSAGE_TYPES.fetch(id)
     end
+
+    def payload
+      @message[5..-1] || ''
+    end
+
   end
 end
