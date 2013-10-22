@@ -1,7 +1,8 @@
 module BitTorrentClient
   class Message
-    def initialize(string)
-      @parsed = MessageParser.new(string)
+    def initialize(raw_message)
+      @raw_message = raw_message
+      @parsed = MessageParser.new(raw_message)
     end
 
     def type
@@ -10,6 +11,10 @@ module BitTorrentClient
 
     def payload
       @parsed.payload
+    end
+
+    def to_s
+      @raw_message
     end
   end
 end

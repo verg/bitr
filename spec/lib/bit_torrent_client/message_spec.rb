@@ -8,6 +8,7 @@ module BitTorrentClient
       let(:msg_2) { "\x00\x00\x00\x05\x04\x00\x00\x00\x0E" }
       let(:msg_3) { "\x00\x00\x00\x05\x04\x00\x00\x00\x11" }
       let(:msg_4) { "\x00\x00\x00\x05\x04\x00\x00\x00." }
+
       it "has a type" do
         message = Message.new(msg_1)
         expect(message.type).to eq :bitfield
@@ -18,6 +19,10 @@ module BitTorrentClient
         expect(message.payload).to eq "\x00\x00\x00\x0E"
       end
 
+      it "responds to to_s" do
+        message = Message.new(msg_1)
+        expect(message.to_s).to eq msg_1
+      end
     end
   end
 end
