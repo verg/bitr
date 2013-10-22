@@ -17,7 +17,8 @@ module BitTorrentClient
       response = HTTPClient.new(peer_id).get_start_event(metainfo)
       peers = response.peers
       peers.map! { |peer| Peer.new(peer) }
-      socket = TCPClient.new(peers[1], peer_id, metainfo.info_hash)
+      THE_RIGHT_PEER = peers.select { |peer| peer.ip == "96.126.104.219" }.first
+      socket = TCPClient.new(THE_RIGHT_PEER, peer_id, metainfo.info_hash)
       data = socket.send_handshake
       expect(handle_encoding(data)).to match(/BitTorrent protocol/)
     end
