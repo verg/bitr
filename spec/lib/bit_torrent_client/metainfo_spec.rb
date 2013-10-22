@@ -62,6 +62,11 @@ module BitTorrentClient
       expect(metainfo.pieces.size).to eq 1
     end
 
+    it "knows the file's piece size" do
+      metainfo = Metainfo.new(metainfo_hash)
+      expect(metainfo.piece_length).to eq 16384
+    end
+
     it "knows the amount of bytes uploaded"
     it "knows the amount of bytes downloaded"
   end

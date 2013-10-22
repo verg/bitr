@@ -19,6 +19,10 @@ module BitTorrentClient
       @info_dictionary.pieces
     end
 
+    def piece_length
+      @info_dictionary.piece_length
+    end
+
     def create_info_hash(info_hash)
       Digest::SHA1.new.digest(info_hash.bencode)
     end
