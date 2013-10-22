@@ -1,7 +1,7 @@
 require_relative "../../../lib/bit_torrent_client/message_handler"
 require_relative "../../spec_helper"
 
-module BitTorrent
+module BitTorrentClient
   class Message
     def initialize(string)
     end
