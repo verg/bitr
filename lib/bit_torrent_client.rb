@@ -13,25 +13,26 @@ require_relative "bit_torrent_client/message_parser"
 require_relative "bit_torrent_client/message_handler"
 
 module BitTorrentClient
-  CLIENT_ID = "-RV0001-#{ 12.times.map { rand(10) }}"
+  MY_PEER_ID = "-RV0001-#{ 12.times.map { rand(10) }.join}"
   class << self
     def start(torrent_file=nil)
       torrent = torrent_file || ARGV[0]
       Torrent.new(torrent)
     end
-
-    def random_id
-    end
   end
 
   class Torrent
-    attr_reader :torrent_file, :uploaded_bytes, :downloaded_bytes
+    attr_reader :torrent_file, :uploaded_bytes, :downloaded_bytes, :announce_url,
+      :info_hash, :my_peer_id
+
     def initialize(torrent_file)
       @torrent_file = torrent_file
       @metainfo = read_torrent_file
       @uploaded_bytes = 0
       @downloaded_bytes = 0
-      # response = HTTPClient.new(CLIENT_ID).get_start_event(@metainfo)
+      @announce_url = @metainfo.announce
+      @info_hash = @metainfo.info_hash
+      @my_peer_id = MY_PEER_ID
     end
 
     def bytes_left
@@ -39,8 +40,8 @@ module BitTorrentClient
     end
 
     def read_torrent_file
-      metainfo_hash = MetainfoParser.parse(torrent_file)
-      Metainfo.new(metainfo_hash)
+      parsed_metainfo = MetainfoParser.parse(torrent_file)
+      Metainfo.new(parsed_metainfo)
     end
   end
 end

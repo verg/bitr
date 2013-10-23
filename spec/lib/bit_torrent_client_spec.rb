@@ -14,7 +14,27 @@ module BitTorrentClient
     end
 
     it "generates a random client id" do
-      expect(BitTorrentClient::CLIENT_ID).to include("-RV0001-")
+      expect(BitTorrentClient::MY_PEER_ID).to include("-RV0001-")
+    end
+
+    describe Torrent do
+      it "knows the announce url" do
+        torrent = Torrent.new(torrent_file)
+        expect(torrent.announce_url).to eq 'http://thomasballinger.com:6969/announce'
+      end
+
+      it "knows the info hash" do
+        info_hash = double("metainfo_hash")
+        Metainfo.any_instance.stub(:info_hash) { info_hash }
+
+        torrent = Torrent.new(torrent_file)
+        expect(torrent.info_hash).to eq info_hash
+      end
+
+      it "has a peer id" do
+        torrent = Torrent.new(torrent_file)
+        expect(torrent.my_peer_id).to eq BitTorrentClient::MY_PEER_ID
+      end
     end
 
     xit "sends the torrent file to be parsed" do
