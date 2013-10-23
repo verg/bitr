@@ -70,6 +70,11 @@ module BitTorrentClient
         info_dict = InfoDictionary.new(info_hash)
         expect(info_dict.files.count).to eq 2
       end
+
+      it "calculates the total download size" do
+        info_dict = InfoDictionary.new(info_hash)
+        expect(info_dict.download_size).to eq 14536248
+      end
     end
   end
 end

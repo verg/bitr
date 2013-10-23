@@ -10,6 +10,11 @@ module BitTorrentClient
       @files = create_files(args)
     end
 
+    def download_size
+      @files.inject(0) { |bytes, file| bytes + file.byte_size }
+    end
+
+
     private
 
     def create_pieces(pieces_string)
