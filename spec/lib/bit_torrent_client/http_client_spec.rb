@@ -11,7 +11,7 @@ module BitTorrentClient
           torrent = Torrent.new(torrent_file)
           torrent.stub(:my_peer_id) { "-RV0001-000000000002" }
 
-          response= HTTPClient.new(torrent.my_peer_id).get_start_event(torrent)
+          response= HTTPClient.new(torrent).get_start_event
           expect(response).to be_instance_of AnnounceResponse
         end
       end

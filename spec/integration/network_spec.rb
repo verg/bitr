@@ -10,7 +10,7 @@ module BitTorrentClient
       torrent_file = "spec/fixtures/flagfromserver.torrent"
       torrent = Torrent.new(torrent_file)
 
-      response = HTTPClient.new(torrent.my_peer_id).get_start_event(torrent)
+      response = HTTPClient.new(torrent).get_start_event
       peers = response.peers
       peers.map! { |peer| Peer.new(peer) }
       THE_RIGHT_PEER = peers.select { |peer| peer.ip == "96.126.104.219" }.first
