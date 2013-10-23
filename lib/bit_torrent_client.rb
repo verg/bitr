@@ -14,6 +14,7 @@ require_relative "bit_torrent_client/message_handler"
 
 module BitTorrentClient
   MY_PEER_ID = "-RV0001-#{ 12.times.map { rand(10) }.join}"
+  MY_PORT    =  6881
   class << self
     def start(torrent_file=nil)
       torrent = torrent_file || ARGV[0]
@@ -23,7 +24,7 @@ module BitTorrentClient
 
   class Torrent
     attr_reader :torrent_file, :uploaded_bytes, :downloaded_bytes, :announce_url,
-      :info_hash, :my_peer_id
+      :info_hash, :my_peer_id, :my_port
 
     def initialize(torrent_file)
       @torrent_file = torrent_file
@@ -33,6 +34,7 @@ module BitTorrentClient
       @announce_url = @metainfo.announce
       @info_hash = @metainfo.info_hash
       @my_peer_id = MY_PEER_ID
+      @my_port = MY_PORT
     end
 
     def bytes_left

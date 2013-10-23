@@ -35,6 +35,11 @@ module BitTorrentClient
         torrent = Torrent.new(torrent_file)
         expect(torrent.my_peer_id).to eq BitTorrentClient::MY_PEER_ID
       end
+
+      it "has a port" do
+        torrent = Torrent.new(torrent_file)
+        expect(torrent.my_port).to eq BitTorrentClient::MY_PORT
+      end
     end
 
     xit "sends the torrent file to be parsed" do
