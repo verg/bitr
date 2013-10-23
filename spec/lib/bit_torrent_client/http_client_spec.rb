@@ -8,14 +8,10 @@ module BitTorrentClient
       it "creates a url" do
         VCR.use_cassette("get_torrent_start_event") do
           torrent_file = File.read("spec/fixtures/flagfromserver.torrent")
-          metainfo = Metainfo.new(MetainfoParser.parse(torrent_file))
-          peer_id = "-RV0001-000000000002"
+          torrent = Torrent.new(torrent_file)
+          torrent.stub(:my_peer_id) { "-RV0001-000000000002" }
 
-          metainfo.stub(:uploaded_bytes) { 0 }
-          metainfo.stub(:downloaded_bytes) { 0 }
-          metainfo.stub(:bytes_left) { 16384 }
-
-          response= HTTPClient.new(peer_id).get_start_event(metainfo)
+          response= HTTPClient.new(torrent.my_peer_id).get_start_event(torrent)
           expect(response).to be_instance_of AnnounceResponse
         end
       end

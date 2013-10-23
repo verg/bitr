@@ -8,10 +8,10 @@ module BitTorrentClient
       @compact = opts.fetch(:compact) { true }
     end
 
-    def get_start_event(metainfo)
-      request_params = build_request_params(metainfo)
+    def get_start_event(torrent)
+      request_params = build_request_params(torrent)
 
-      uri = URI(metainfo.announce)
+      uri = URI(torrent.announce_url)
       uri.query = URI.encode_www_form(request_params)
       response = Net::HTTP.get_response(uri)
       AnnounceResponse.new(response.body)
@@ -19,19 +19,19 @@ module BitTorrentClient
 
     private
 
-    def build_request_params(metainfo)
+    def build_request_params(torrent)
       if @compact
         compact_param = { 'compact' => 1 }
       else
         compact_param = { 'compact' => 0 }
       end
 
-      { 'info_hash' => metainfo.info_hash,
+      { 'info_hash' => torrent.info_hash,
         'peer_id' => @peer_id,
         'port' => @port,
-        'uploaded' => metainfo.uploaded_bytes,
-        'downloaded' => metainfo.downloaded_bytes,
-        'left' => metainfo.bytes_left,
+        'uploaded' => torrent.uploaded_bytes,
+        'downloaded' => torrent.downloaded_bytes,
+        'left' => torrent.bytes_left,
         'no_peer_id' => 0,
         'event' => "started" }.merge(compact_param)
     end
