@@ -15,6 +15,10 @@ module BitTorrentClient
       @uri_encoded_info_hash = URI.encode(@info_hash)
     end
 
+    def download_size
+      @info_dictionary.download_size
+    end
+
     def pieces
       @info_dictionary.pieces
     end
