@@ -18,13 +18,18 @@ module BitTorrentClient
   class << self
     def start(torrent_file=nil)
       torrent = torrent_file || ARGV[0]
-      Torrent.new(torrent)
+      @torrent = Torrent.new(torrent)
+      @torrent.announce_to_tracker
+      @torrent.get_peers
+      the_right_peer = @torrent.peers.select { |peer| peer.ip == "96.126.104.219" }.first
+      @torrent.connect_to(the_right_peer)
+      @torrent
     end
   end
 
   class Torrent
     attr_reader :torrent_file, :uploaded_bytes, :downloaded_bytes, :announce_url,
-      :info_hash, :my_peer_id, :my_port
+      :info_hash, :my_peer_id, :my_port, :peers
 
     def initialize(torrent_file)
       @torrent_file = torrent_file
@@ -32,9 +37,11 @@ module BitTorrentClient
       @uploaded_bytes = 0
       @downloaded_bytes = 0
       @announce_url = @metainfo.announce
+      @announce_response = nil
       @info_hash = @metainfo.info_hash
       @my_peer_id = MY_PEER_ID
       @my_port = MY_PORT
+      @peers = []
     end
 
     def bytes_left
@@ -44,6 +51,18 @@ module BitTorrentClient
     def read_torrent_file
       parsed_metainfo = MetainfoParser.parse(torrent_file)
       Metainfo.new(parsed_metainfo)
+    end
+
+    def announce_to_tracker
+      @announce_response = HTTPClient.new(self).get_start_event
+    end
+
+    def get_peers
+      @peers = @announce_response.peers.map { |peer| Peer.new(peer) }
+    end
+
+    def connect_to(peer)
+      TCPClient.new(peer, @my_peer_id, @info_hash)
     end
   end
 end

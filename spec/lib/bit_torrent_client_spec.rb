@@ -11,6 +11,8 @@ module BitTorrentClient
       expect(torrent.uploaded_bytes).to eq(0)
       expect(torrent.downloaded_bytes).to eq(0)
       expect(torrent.bytes_left).to eq 1277987
+
+      expect(torrent.peers).to_not be_empty
     end
 
     it "generates a random client id" do
