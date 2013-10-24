@@ -37,5 +37,10 @@ module BitTorrentClient
       message = MessageBuilder.build(:handshake, info_hash: info_hash, client_id: client_id)
       expect(handle_encoding(message.to_s)).to eq handle_encoding(handshake)
     end
+
+    it "can build raw message strings" do
+      message = MessageBuilder.build_raw(:interested)
+      expect(message).to eq interested
+    end
   end
 end

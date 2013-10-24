@@ -1,9 +1,13 @@
 module BitTorrentClient
   module MessageBuilder
     def self.build(message_type, opts={})
-      @opts = opts
-      raw_message  = self.send(message_type)
+      raw_message = build_raw(message_type, opts)
       Message.new(raw_message)
+    end
+
+    def self.build_raw(message_type, opts={})
+      @opts = opts
+      self.send(message_type)
     end
 
     private
