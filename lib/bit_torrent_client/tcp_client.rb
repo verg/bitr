@@ -45,5 +45,10 @@ module BitTorrentClient
     def interested_message
       MessageBuilder.build(:interested).to_s
     end
+
+    def request_message(index, length, begin_offset="\x00\x00\x00\x00")
+      MessageBuilder.build(:request, index: index, length: length,
+                                     begin: begin_offset).to_s
+    end
   end
 end
