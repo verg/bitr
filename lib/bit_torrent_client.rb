@@ -16,6 +16,7 @@ require_relative "bit_torrent_client/message_handler"
 module BitTorrentClient
   MY_PEER_ID = "-RV0001-#{ 12.times.map { rand(10) }.join}"
   MY_PORT    =  6881
+  BLOCK_LENGTH = [16384].pack("N*")
   class << self
     def start(torrent_file=nil, opts={})
       @print_log = opts.fetch(:print_log) { false }
@@ -29,7 +30,7 @@ module BitTorrentClient
     end
 
     def log(messsage)
-      puts messsage if @print_log
+      p messsage if @print_log
     end
   end
 
@@ -49,6 +50,7 @@ module BitTorrentClient
       @my_peer_id = MY_PEER_ID
       @my_port = MY_PORT
       @peers = []
+      @have_messages = []
     end
 
     def bytes_left
@@ -70,7 +72,7 @@ module BitTorrentClient
 
     def connect_to(peer)
       @socket = EM.connect(peer.ip, peer.port,  TCPClient,
-                          {torrent: self, peer: peer })
+                           {torrent: self, peer: peer })
       @socket.exchange_handshake
     end
 
@@ -80,6 +82,19 @@ module BitTorrentClient
         case message.type
         when :handshake
           EM.next_tick { @socket.declare_interest }
+        when :unchoke
+          # TODO set is_choking state on peer to false
+          @have_messages.each do |have_message|
+            EM.next_tick {
+              @socket.request_piece(have_message.piece_index,
+                                    "\x00\x00\x00\x00",
+                                    BitTorrentClient::BLOCK_LENGTH)
+            }
+          end
+        when :have
+          @have_messages << message
+        when :piece
+
         end
       end
       BitTorrentClient.log "===Batch of messages handled==="

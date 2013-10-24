@@ -13,7 +13,7 @@ module BitTorrentClient
     end
 
     def receive_data(data)
-      p "Receiving data #{data}"
+      # BitTorrentClient.log "Receiving data #{data}"
       messages = @message_handler.handle data
       @torrent.handle_messages(messages)
     end
@@ -28,6 +28,11 @@ module BitTorrentClient
       send_data(interested_message)
     end
 
+    def request_piece(index, begin_offset, length)
+      BitTorrentClient.log "Requesting piece #{ index }"
+      send_data(request_message(index, begin_offset, length))
+    end
+
     def unbind
       BitTorrentClient.log "something disconnected"
       shutdown
@@ -36,6 +41,8 @@ module BitTorrentClient
     def shutdown
       @socket.close if @socket
     end
+
+    private
 
     def handshake_message
       MessageBuilder.build(:handshake, info_hash: @info_hash,
@@ -46,7 +53,7 @@ module BitTorrentClient
       MessageBuilder.build(:interested).to_s
     end
 
-    def request_message(index, length, begin_offset="\x00\x00\x00\x00")
+    def request_message(index, begin_offset, length)
       MessageBuilder.build(:request, index: index, length: length,
                                      begin: begin_offset).to_s
     end
