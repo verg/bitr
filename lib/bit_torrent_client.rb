@@ -1,3 +1,4 @@
+require 'eventmachine'
 require_relative "bit_torrent_client/metainfo"
 require_relative "bit_torrent_client/http_client"
 require_relative "bit_torrent_client/metainfo_parser"
@@ -62,7 +63,20 @@ module BitTorrentClient
     end
 
     def connect_to(peer)
-      TCPClient.new(peer, @my_peer_id, @info_hash)
+      @socket = EM.connect(peer.ip, peer.port,  TCPClient,
+                          {torrent: self, peer: peer })
+      @socket.exchange_handshake
+    end
+
+    def handle_messages(messages)
+      messages.each do |message|
+        puts "Received #{message.type}"
+        case message.type
+        when :handshake
+          EM.next_tick { @socket.declare_interest }
+        end
+      end
+      puts "===Batch of messages handled==="
     end
   end
 end

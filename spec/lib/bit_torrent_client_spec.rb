@@ -5,14 +5,18 @@ module BitTorrentClient
   describe BitTorrentClient do
     let(:torrent_file) {"spec/fixtures/flagfromserver.torrent"}
     it "initializes with a torrent file" do
-      torrent = BitTorrentClient.start(torrent_file)
-      expect(torrent.torrent_file).to eq(torrent_file)
+      EM.run do
+        torrent = BitTorrentClient.start(torrent_file)
+        expect(torrent.torrent_file).to eq(torrent_file)
 
-      expect(torrent.uploaded_bytes).to eq(0)
-      expect(torrent.downloaded_bytes).to eq(0)
-      expect(torrent.bytes_left).to eq 1277987
-
-      expect(torrent.peers).to_not be_empty
+        expect(torrent.uploaded_bytes).to eq(0)
+        expect(torrent.downloaded_bytes).to eq(0)
+        expect(torrent.bytes_left).to eq 1277987
+        expect(torrent.peers).to_not be_empty
+        EM::Timer.new(4) do
+          EM.stop
+        end
+      end
     end
 
     it "generates a random client id" do
