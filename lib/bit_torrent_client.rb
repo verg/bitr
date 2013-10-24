@@ -16,7 +16,7 @@ require_relative "bit_torrent_client/message_handler"
 module BitTorrentClient
   MY_PEER_ID = "-RV0001-#{ 12.times.map { rand(10) }.join}"
   MY_PORT    =  6881
-  BLOCK_LENGTH = [16384].pack("N*")
+  BLOCK_LENGTH = 16384
   class << self
     def start(torrent_file=nil, opts={})
       @print_log = opts.fetch(:print_log) { false }
@@ -76,6 +76,9 @@ module BitTorrentClient
       @socket.exchange_handshake
     end
 
+    def hex_block_bytes
+      [BLOCK_LENGTH].pack("N*")
+    end
     def handle_messages(messages)
       messages.each do |message|
         BitTorrentClient.log "Received #{message.type}"
@@ -88,7 +91,7 @@ module BitTorrentClient
             EM.next_tick {
               @socket.request_piece(have_message.piece_index,
                                     "\x00\x00\x00\x00",
-                                    BitTorrentClient::BLOCK_LENGTH)
+                                    hex_block_bytes)
             }
           end
         when :have
