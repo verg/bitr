@@ -30,11 +30,12 @@ module BitTorrentClient
 
   class Torrent
     attr_reader :torrent_file, :uploaded_bytes, :downloaded_bytes, :announce_url,
-      :info_hash, :my_peer_id, :my_port, :peers
+      :info_hash, :my_peer_id, :my_port, :peers, :piece_length
 
     def initialize(torrent_file)
       @torrent_file = torrent_file
       @metainfo = read_torrent_file
+      @piece_length = @metainfo.piece_length
       @uploaded_bytes = 0
       @downloaded_bytes = 0
       @announce_url = @metainfo.announce

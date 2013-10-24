@@ -46,6 +46,11 @@ module BitTorrentClient
         torrent = Torrent.new(torrent_file)
         expect(torrent.my_port).to eq BitTorrentClient::MY_PORT
       end
+
+      it "knows the length of pieces" do
+        torrent = Torrent.new(torrent_file)
+        expect(torrent.piece_length).to eq 16384
+      end
     end
 
     xit "sends the torrent file to be parsed" do
