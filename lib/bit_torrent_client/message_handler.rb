@@ -44,9 +44,16 @@ module BitTorrentClient
 
     def handle_handshake
       if !handshook? && @stream.length >= 68
-        @stream.slice!(0..67)
+        handshake_message = @stream.slice!(0..67)
+        @parsed_messages << Handshake.new(handshake_message)
         @handshook = true
       end
+    end
+  end
+
+  Handshake = Struct.new(:msg) do
+    def type
+      :handshake
     end
   end
 end

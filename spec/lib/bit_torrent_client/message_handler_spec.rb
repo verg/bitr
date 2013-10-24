@@ -1,5 +1,6 @@
 require_relative "../../../lib/bit_torrent_client/message_handler"
 require_relative "../../../lib/bit_torrent_client/message"
+require_relative "../../../lib/bit_torrent_client/message_parser"
 require_relative "../../spec_helper"
 
 module BitTorrentClient
@@ -31,7 +32,7 @@ module BitTorrentClient
 
     it "parses messages based on message length" do
       messages = message_handler.handle(stream)
-      expect(messages.length).to eq 8
+      expect(messages.length).to eq 9
     end
 
     describe "#handle" do
