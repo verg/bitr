@@ -18,8 +18,8 @@ module BitTorrentClient
     private
 
     def create_pieces(pieces_string)
-      split_by_twenty_bits(pieces_string).map do |twenty_bit_sha|
-        Piece.new(twenty_bit_sha)
+      split_by_twenty_bits(pieces_string).map.with_index do |twenty_bit_sha, index|
+        Piece.new(index, twenty_bit_sha, @piece_length)
       end
     end
 
