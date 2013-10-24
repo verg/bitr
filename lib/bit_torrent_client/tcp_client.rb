@@ -19,17 +19,17 @@ module BitTorrentClient
     end
 
     def exchange_handshake
-      puts "Sending handshake"
+      BitTorrentClient.log "Sending handshake"
       send_data(handshake_message)
     end
 
     def declare_interest
-      puts "Declaring interest"
+      BitTorrentClient.log "Declaring interest"
       send_data(interested_message)
     end
 
     def unbind
-      puts "something disconnected"
+      BitTorrentClient.log "something disconnected"
       shutdown
     end
 

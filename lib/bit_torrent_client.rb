@@ -17,7 +17,8 @@ module BitTorrentClient
   MY_PEER_ID = "-RV0001-#{ 12.times.map { rand(10) }.join}"
   MY_PORT    =  6881
   class << self
-    def start(torrent_file=nil)
+    def start(torrent_file=nil, opts={})
+      @print_log = opts.fetch(:print_log) { false }
       torrent = torrent_file || ARGV[0]
       @torrent = Torrent.new(torrent)
       @torrent.announce_to_tracker
@@ -25,6 +26,10 @@ module BitTorrentClient
       the_right_peer = @torrent.peers.select { |peer| peer.ip == "96.126.104.219" }.first
       @torrent.connect_to(the_right_peer)
       @torrent
+    end
+
+    def log(messsage)
+      puts messsage if @print_log
     end
   end
 
@@ -71,13 +76,13 @@ module BitTorrentClient
 
     def handle_messages(messages)
       messages.each do |message|
-        puts "Received #{message.type}"
+        BitTorrentClient.log "Received #{message.type}"
         case message.type
         when :handshake
           EM.next_tick { @socket.declare_interest }
         end
       end
-      puts "===Batch of messages handled==="
+      BitTorrentClient.log "===Batch of messages handled==="
     end
   end
 end

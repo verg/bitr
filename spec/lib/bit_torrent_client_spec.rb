@@ -6,14 +6,14 @@ module BitTorrentClient
     let(:torrent_file) {"spec/fixtures/flagfromserver.torrent"}
     it "initializes with a torrent file" do
       EM.run do
-        torrent = BitTorrentClient.start(torrent_file)
+        torrent = BitTorrentClient.start(torrent_file, {print_log: true})
         expect(torrent.torrent_file).to eq(torrent_file)
 
         expect(torrent.uploaded_bytes).to eq(0)
         expect(torrent.downloaded_bytes).to eq(0)
         expect(torrent.bytes_left).to eq 1277987
         expect(torrent.peers).to_not be_empty
-        EM::Timer.new(4) do
+        EM::Timer.new(2) do
           EM.stop
         end
       end
