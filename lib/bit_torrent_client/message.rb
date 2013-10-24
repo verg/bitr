@@ -16,5 +16,9 @@ module BitTorrentClient
     def to_s
       @raw_message
     end
+
+    def piece_index
+      @parsed.piece_index
+    end
   end
 end

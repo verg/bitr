@@ -23,6 +23,11 @@ module BitTorrentClient
         message = Message.new(msg_1)
         expect(message.to_s).to eq msg_1
       end
+
+      it "has a pieces" do
+        message = Message.new(msg_2)
+        expect(message.piece_index).to eq "\x00\x00\x00\x0E"
+      end
     end
   end
 end
