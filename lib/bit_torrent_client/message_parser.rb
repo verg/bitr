@@ -20,10 +20,6 @@ module BitTorrentClient
       @length = @message[0..3].unpack("N").first
     end
 
-    def get_type
-      @message
-    end
-
     def type
       return :keep_alive if @length == 0
 
@@ -33,6 +29,15 @@ module BitTorrentClient
 
     def payload
       @message[5..-1] || ''
+    end
+
+    def piece_index
+      case type
+      when :have, :request, :piece, :cancel
+        @message[5..8]
+      else
+        ""
+      end
     end
   end
 end
