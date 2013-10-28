@@ -27,8 +27,9 @@ module BitTorrentClient
     end
 
     it "calculates the number of blocks in a piece" do
+      BLOCK_LENGTH = 4096
       piece = Piece.new(0, sha, length)
-      expect(piece.num_of_blocks).to eq 1
+      expect(piece.num_of_blocks).to eq 4
     end
 
     describe "piece status" do
@@ -50,9 +51,8 @@ module BitTorrentClient
     end
 
     describe "block status" do
-      it "intializes with an array incomplete blocks" do
-        BitTorrentClient::BLOCK_LENGTH = 4096
 
+      it "intializes with an array incomplete blocks" do
         piece = Piece.new(0, sha, length)
         piece.blocks.each do |byte_offset, block_status|
           expect(block_status).to be :incomplete
