@@ -15,7 +15,7 @@ module BitTorrentClient
     def receive_data(data)
       # BitTorrentClient.log "Receiving data #{data}"
       messages = @message_handler.handle data
-      @torrent.handle_messages(messages)
+      @torrent.handle_messages(messages, @peer)
     end
 
     def exchange_handshake

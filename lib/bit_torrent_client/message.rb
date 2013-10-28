@@ -12,6 +12,7 @@ module BitTorrentClient
     def payload
       @parsed.payload
     end
+    alias :bitfield :payload
 
     def to_s
       @raw_message

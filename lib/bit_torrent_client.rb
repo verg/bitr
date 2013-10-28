@@ -80,14 +80,14 @@ module BitTorrentClient
       [BLOCK_LENGTH].pack("N*")
     end
 
-    def handle_messages(messages)
+    def handle_messages(messages, peer)
       messages.each do |message|
         BitTorrentClient.log "Received #{message.type}"
         case message.type
         when :handshake
           EM.next_tick { @socket.declare_interest }
         when :bitfield
-          message.payload.unpack("B*").first
+          peer.process_bitfield(message.bitfield)
         when :unchoke
           # TODO set is_choking state on peer to false
           @have_messages.each do |have_message|
