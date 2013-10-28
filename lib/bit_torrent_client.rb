@@ -98,7 +98,7 @@ module BitTorrentClient
             }
           end
         when :have
-          @have_messages << message
+          peer.has_piece_at message.piece_index
         when :piece
           piece = @pieces.find(message.piece_index)
           piece.block_complete!(message.byte_offset)
