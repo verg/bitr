@@ -5,6 +5,7 @@ module BitTorrentClient
   describe PieceCollection do
     before { BLOCK_LENGTH = 4096 }
     let(:index) { 0 }
+    let(:byte_index) { "\x00\x00\x00\x00" }
     let(:sha) { %[\x12\x34\x56\x78\x9a\xbc\xde\xf1\x23\x45\x67\x89\xab\xcd\xef\x12\x34\x56\x78\x9a] }
     let(:length) { 1 }
 
@@ -63,5 +64,14 @@ module BitTorrentClient
       pieces << piece
       expect(pieces.find(index)).to eq piece
     end
+
+    it "can find a specific piece by byte index or integer index" do
+      piece = Piece.new(index, sha, length)
+      pieces = PieceCollection.new
+      pieces << piece
+      expect(pieces.find(index)).to eq piece
+      expect(pieces.find(byte_index)).to eq piece
+    end
+
   end
 end

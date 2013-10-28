@@ -10,9 +10,13 @@ module BitTorrentClient
     end
 
     def find(index)
+      index = convert_byte_to_int(index) if index.class == String
       @pieces.find { |piece| piece.index == index }
     end
 
+    def convert_byte_to_int(data)
+      data.unpack("N")[0]
+    end
     def incomplete
       @pieces.select { |piece| !piece.complete? }
     end
