@@ -3,7 +3,7 @@ require 'forwardable'
 module BitTorrentClient
   class PieceCollection
     extend Forwardable
-    def_delegators :@pieces, :each, :<<, :length, :size
+    def_delegators :@pieces, :each, :<<, :length, :size, :first, :last
 
     def initialize(pieces=[])
       @pieces = pieces

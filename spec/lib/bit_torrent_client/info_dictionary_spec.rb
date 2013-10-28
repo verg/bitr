@@ -1,6 +1,8 @@
 require_relative "../../../lib/bit_torrent_client/info_dictionary"
 require_relative "../../../lib/bit_torrent_client/downloadable_file"
 require_relative "../../../lib/bit_torrent_client/piece"
+require_relative "../../../lib/bit_torrent_client/piece_collection"
+require_relative "../../../lib/bit_torrent_client/config"
 
 module BitTorrentClient
   describe InfoDictionary do

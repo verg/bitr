@@ -4,6 +4,7 @@ require_relative "bit_torrent_client/http_client"
 require_relative "bit_torrent_client/metainfo_parser"
 require_relative "bit_torrent_client/info_dictionary"
 require_relative "bit_torrent_client/piece"
+require_relative "bit_torrent_client/piece_collection"
 require_relative "bit_torrent_client/peer"
 require_relative "bit_torrent_client/downloadable_file"
 require_relative "bit_torrent_client/announce_response"
@@ -12,11 +13,9 @@ require_relative "bit_torrent_client/message_builder"
 require_relative "bit_torrent_client/message"
 require_relative "bit_torrent_client/message_parser"
 require_relative "bit_torrent_client/message_handler"
+require_relative "bit_torrent_client/config"
 
 module BitTorrentClient
-  MY_PEER_ID = "-RV0001-#{ 12.times.map { rand(10) }.join}"
-  MY_PORT    =  6881
-  BLOCK_LENGTH = 16384
   class << self
     def start(torrent_file=nil, opts={})
       @print_log = opts.fetch(:print_log) { false }
