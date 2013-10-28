@@ -28,6 +28,12 @@ module BitTorrentClient
         message = Message.new(msg_2)
         expect(message.piece_index).to eq "\x00\x00\x00\x0E"
       end
+
+      let(:piece) { "\x00\x00\x00\x01\x07\x00\x00\x00\x0E\x00\x00\x00\x00" }
+      it "can have a byte offset" do
+        message = Message.new(piece)
+        expect(message.byte_offset).to eq "\x00\x00\x00\x00"
+      end
     end
   end
 end

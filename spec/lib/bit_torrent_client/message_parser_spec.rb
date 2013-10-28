@@ -62,7 +62,7 @@ module BitTorrentClient
       describe "piece-related messages" do
         let(:have) { "\x00\x00\x00\x05\x04\x00\x00\x00\x0E" }
         let(:request) { "\x00\x00\x00\x01\x06\x00\x00\x00\x0E" }
-        let(:piece) { "\x00\x00\x00\x01\x07\x00\x00\x00\x0E" }
+        let(:piece) { "\x00\x00\x00\x01\x07\x00\x00\x00\x0E\x00\x00\x00\x00" }
         let(:cancel) { "\x00\x00\x00\x01\x08\x00\x00\x00\x0E" }
 
         it "identifies a have message" do
@@ -87,6 +87,11 @@ module BitTorrentClient
           parser = MessageParser.new(cancel)
           expect(parser.type).to eq :cancel
           expect(parser.piece_index).to eq "\x00\x00\x00\x0E"
+        end
+
+        it "returns a byte offset for request, piece, and cancel" do
+          parser = MessageParser.new(piece)
+          expect(parser.byte_offset).to eq "\x00\x00\x00\x00"
         end
       end
 

@@ -20,5 +20,10 @@ module BitTorrentClient
     def piece_index
       @parsed.piece_index
     end
+
+    def byte_offset
+      @parsed.byte_offset
+    end
+
   end
 end

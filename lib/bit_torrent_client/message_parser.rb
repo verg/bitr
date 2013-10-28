@@ -39,5 +39,14 @@ module BitTorrentClient
         ""
       end
     end
+
+    def byte_offset
+      case type
+      when :request, :piece, :cancel
+        @message[9..12]
+      else
+        ""
+      end
+    end
   end
 end
