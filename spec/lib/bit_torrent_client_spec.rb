@@ -14,6 +14,8 @@ module BitTorrentClient
         expect(torrent.bytes_left).to eq 1277987
         expect(torrent.peers).to_not be_empty
         EM::Timer.new(2) do
+          expect(torrent.pieces.complete.length).to be > 0
+          expect(torrent.pieces.incomplete.length).to be > 0
           EM.stop
         end
       end
@@ -35,6 +37,13 @@ module BitTorrentClient
 
         torrent = Torrent.new(torrent_file)
         expect(torrent.info_hash).to eq info_hash
+      end
+
+      it "has a collection of pieces" do
+        pieces = double("pieces_collection")
+        Metainfo.any_instance.stub(:pieces) { pieces }
+        torrent = Torrent.new(torrent_file)
+        expect(torrent.pieces).to eq pieces
       end
 
       it "has a peer id" do

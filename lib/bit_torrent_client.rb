@@ -35,7 +35,7 @@ module BitTorrentClient
 
   class Torrent
     attr_reader :torrent_file, :uploaded_bytes, :downloaded_bytes, :announce_url,
-      :info_hash, :my_peer_id, :my_port, :peers, :piece_length
+      :info_hash, :my_peer_id, :my_port, :peers, :piece_length, :pieces
 
     def initialize(torrent_file)
       @torrent_file = torrent_file
@@ -46,6 +46,7 @@ module BitTorrentClient
       @announce_url = @metainfo.announce
       @announce_response = nil
       @info_hash = @metainfo.info_hash
+      @pieces = @metainfo.pieces
       @my_peer_id = MY_PEER_ID
       @my_port = MY_PORT
       @peers = []
@@ -78,12 +79,15 @@ module BitTorrentClient
     def hex_block_bytes
       [BLOCK_LENGTH].pack("N*")
     end
+
     def handle_messages(messages)
       messages.each do |message|
         BitTorrentClient.log "Received #{message.type}"
         case message.type
         when :handshake
           EM.next_tick { @socket.declare_interest }
+        when :bitfield
+          message.payload.unpack("B*").first
         when :unchoke
           # TODO set is_choking state on peer to false
           @have_messages.each do |have_message|
@@ -96,7 +100,8 @@ module BitTorrentClient
         when :have
           @have_messages << message
         when :piece
-
+          piece = @pieces.find(message.piece_index)
+          piece.block_complete!(message.byte_offset)
         end
       end
       BitTorrentClient.log "===Batch of messages handled==="
