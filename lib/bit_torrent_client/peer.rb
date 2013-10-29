@@ -24,6 +24,7 @@ module BitTorrentClient
     end
 
     def has_piece_at(index)
+      index = index.unpack("N").first if index.class == String
       @available_pieces[index] = true
     end
 

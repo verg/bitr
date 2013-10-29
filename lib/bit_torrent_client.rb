@@ -80,25 +80,26 @@ module BitTorrentClient
       [BLOCK_LENGTH].pack("N*")
     end
 
-    def handle_messages(messages, peer)
+    def handle_messages(messages, socket)
       messages.each do |message|
         BitTorrentClient.log "Received #{message.type}"
         case message.type
         when :handshake
-          EM.next_tick { @socket.declare_interest }
+          EM.next_tick { socket.declare_interest }
         when :bitfield
-          peer.process_bitfield(message.bitfield)
+          socket.peer.process_bitfield(message.bitfield)
         when :unchoke
           # TODO set is_choking state on peer to false
           @have_messages.each do |have_message|
             EM.next_tick {
-              @socket.request_piece(have_message.piece_index,
+              socket.request_piece(have_message.piece_index,
                                     "\x00\x00\x00\x00",
                                     hex_block_bytes)
             }
           end
         when :have
-          peer.has_piece_at message.piece_index
+          socket.peer.has_piece_at message.piece_index
+          @have_messages << message
         when :piece
           piece = @pieces.find(message.piece_index)
           piece.block_complete!(message.byte_offset)

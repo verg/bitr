@@ -2,6 +2,7 @@ module BitTorrentClient
   class TCPClient < EventMachine::Connection
 
     SIXTEEN_KB = 1024 * 16
+    attr_reader :peer
 
     def initialize(opts={})
       super
@@ -15,7 +16,7 @@ module BitTorrentClient
     def receive_data(data)
       # BitTorrentClient.log "Receiving data #{data}"
       messages = @message_handler.handle data
-      @torrent.handle_messages(messages, @peer)
+      @torrent.handle_messages(messages, self)
     end
 
     def exchange_handshake
