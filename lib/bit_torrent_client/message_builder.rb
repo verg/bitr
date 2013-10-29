@@ -34,10 +34,17 @@ module BitTorrentClient
       {
         message_lenth: "\x00\x00\x00\x0d",
         id: "\x06",
-        index: @opts.fetch(:index),
+        index: convert_to_4_bytes(@opts.fetch(:index)),
         begin: @opts.fetch(:begin),
         length: @opts.fetch(:length)
       }.values.join("")
+    end
+
+    def self.convert_to_4_bytes(n)
+      if n.is_a?(Numeric)
+        n = [n].pack("N*")
+      end
+      n
     end
   end
 end

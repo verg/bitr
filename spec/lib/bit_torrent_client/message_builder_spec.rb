@@ -21,7 +21,7 @@ module BitTorrentClient
     end
 
     it "can create :request messages" do
-      index =  "\x00\x00\x00\x01"
+      index =  1
       begin_bytes = "\x00\x00\x00\x02"
       length = "\x00\x00\x00\x03"
 
