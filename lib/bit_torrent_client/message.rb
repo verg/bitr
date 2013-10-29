@@ -14,6 +14,10 @@ module BitTorrentClient
     end
     alias :bitfield :payload
 
+    def block
+      payload[8...@raw_message.length]
+    end
+
     def to_s
       @raw_message
     end

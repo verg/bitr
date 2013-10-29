@@ -19,6 +19,12 @@ module BitTorrentClient
         expect(message.payload).to eq "\x00\x00\x00\x0E"
       end
 
+      let(:piece) { "\x00\x00\x00\x01\x07\x00\x00\x00\x0E\x00\x00\x00\x00\x00" }
+      it "has a block" do
+        message = Message.new(piece)
+        expect(message.block).to eq "\x00"
+      end
+
       it "responds to to_s" do
         message = Message.new(msg_1)
         expect(message.to_s).to eq msg_1
@@ -29,7 +35,6 @@ module BitTorrentClient
         expect(message.piece_index).to eq "\x00\x00\x00\x0E"
       end
 
-      let(:piece) { "\x00\x00\x00\x01\x07\x00\x00\x00\x0E\x00\x00\x00\x00" }
       it "can have a byte offset" do
         message = Message.new(piece)
         expect(message.byte_offset).to eq "\x00\x00\x00\x00"
