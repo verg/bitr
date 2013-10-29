@@ -13,6 +13,7 @@ require_relative "bit_torrent_client/message_builder"
 require_relative "bit_torrent_client/message"
 require_relative "bit_torrent_client/message_parser"
 require_relative "bit_torrent_client/message_handler"
+require_relative "bit_torrent_client/download_controller"
 require_relative "bit_torrent_client/config"
 
 module BitTorrentClient
@@ -47,6 +48,7 @@ module BitTorrentClient
       @announce_response = nil
       @info_hash = @metainfo.info_hash
       @pieces = @metainfo.pieces
+      @download_controller = DownloadController.new(@pieces)
       @my_peer_id = MY_PEER_ID
       @my_port = MY_PORT
       @peers = []
@@ -87,19 +89,15 @@ module BitTorrentClient
           socket.peer.process_bitfield(message.bitfield)
         when :unchoke
           # TODO set is_choking state on peer to false
-          @have_messages.each do |have_message|
-            EM.next_tick {
-              socket.request_piece(have_message.piece_index,
-                                    "\x00\x00\x00\x00",
-                                    BitTorrentClient.hex_block_bytes)
-            }
-          end
+          @download_controller.add_socket(socket)
+          @download_controller.tick
         when :have
           socket.peer.has_piece_at message.piece_index
-          @have_messages << message
         when :piece
           piece = @pieces.find(message.piece_index)
           piece.block_complete!(message.byte_offset)
+          @download_controller.handle_piece_message(message)
+          @download_controller.tick
         end
       end
       BitTorrentClient.log "===Batch of messages handled==="
