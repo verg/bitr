@@ -17,6 +17,7 @@ module BitTorrentClient
     def convert_byte_to_int(data)
       data.unpack("N")[0]
     end
+
     def incomplete
       @pieces.select { |piece| !piece.complete? }
     end
