@@ -76,9 +76,6 @@ module BitTorrentClient
       @socket.exchange_handshake
     end
 
-    def hex_block_bytes
-      [BLOCK_LENGTH].pack("N*")
-    end
 
     def handle_messages(messages, socket)
       messages.each do |message|
