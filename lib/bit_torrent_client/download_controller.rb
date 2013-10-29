@@ -15,6 +15,10 @@ module BitTorrentClient
       send_request while ready?
     end
 
+    def handle_piece_message(piece)
+      piece_received
+    end
+
     def ready?
       has_sockets? && !download_complete? && !requests_maxed?
     end
@@ -26,6 +30,7 @@ module BitTorrentClient
                            piece.next_byte_offset,
                            BitTorrentClient.hex_block_bytes)
       piece_requested
+      piece.block_requested!(piece.next_byte_offset)
     end
 
     def first_available_peer(piece_index)
@@ -58,8 +63,7 @@ module BitTorrentClient
     end
 
     def next_piece
-      pieces.incomplete.first
+      pieces.incomplete.find { |piece| piece.has_incomplete_blocks? }
     end
-
   end
 end

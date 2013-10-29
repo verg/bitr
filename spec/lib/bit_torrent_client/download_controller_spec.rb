@@ -11,7 +11,8 @@ module BitTorrentClient
              incomplete_blocks: [:block1, :block2],
              :complete? => false,
              :index => "\x00\x00\x00\x00",
-             :next_byte_offset => "\x00\x00\x00\x00")
+             :next_byte_offset => "\x00\x00\x00\x00",
+             :has_incomplete_blocks? => true)
     }
     let(:piece_1) { double("piece one", :complete? => false) }
     let(:piece_2) { double("piece two", :complete? => false) }
@@ -36,6 +37,18 @@ module BitTorrentClient
         expect(controller.pending_requests).to eq 0
         expect { controller.piece_received }.to raise_error IndexError
       end
+    end
+
+    describe "recieving pieces" do
+      it "decrements the pending requests" do
+        downloaded_piece = double("piece")
+
+        controller.piece_requested
+        controller.handle_piece_message(downloaded_piece)
+        expect(controller.pending_requests).to eq 0
+      end
+
+      it "sends it to be written to disk"
     end
 
     it "needs sockets to be ready" do
@@ -63,9 +76,22 @@ module BitTorrentClient
 
     describe "#tick" do
       it "sends a request to the socket if controller is ready" do
+        piece.stub(:block_requested!)
         socket.should_receive(:request_piece).exactly(20).times
         socket.stub(:peer) { double("peer", :has_piece? => true) }
         controller.add_socket(socket)
+        controller.tick
+      end
+
+      xit "marks the requested block as in progress" do
+        socket.stub(:peer) { double("peer", :has_piece? => true) }
+        socket.stub(:request_piece)
+        pieces = PieceCollection.new([piece])
+        controller = DownloadController.new(pieces)
+        controller.add_socket(socket)
+
+        piece.stub(:has_incomplete_blocks?).and_return(true, false)
+        piece.should_receive(:block_requested!).with(piece.next_byte_offset)
         controller.tick
       end
     end
