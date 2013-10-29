@@ -22,21 +22,44 @@ module BitTorrentClient
       it "starts with no connections" do
         expect(controller.pending_requests).to eq 0
       end
-      it "increments pending requests when a new request is made"
-      it "decrements pending requests when a piece is finsished"
+      it "increments pending requests when a new request is made" do
+        controller.piece_requested
+        expect(controller.pending_requests).to eq 1
+      end
+      it "decrements pending requests when a piece is finsished" do
+        controller.piece_requested
+        controller.piece_received
+        expect(controller.pending_requests).to eq 0
+      end
+
+      it "raises an error if pending_requests is already at zero" do
+        expect(controller.pending_requests).to eq 0
+        expect { controller.piece_received }.to raise_error IndexError
+      end
     end
 
-    it "knows if it has any sockets" do
-      expect(controller.has_sockets?).to be false
+    it "needs sockets to be ready" do
+      expect(controller.ready?).to be false
       controller.add_socket(socket)
-      expect(controller.has_sockets?).to be true
+      expect(controller.ready?).to be true
     end
 
-    it "knows if it needs pieces"
+    it "needs pieces to be ready" do
+      pieces.stub(:download_complete?) { true }
+      controller.add_socket(socket)
+      expect(controller.ready?).to eq false
+      pieces.stub(:download_complete?) { false }
+      expect(controller.ready?).to eq true
+    end
 
-    it "knows if it's maxed out its connections"
-
-    it "knows if it can make another request"
+    it "can't be maxed out on requests to be ready" do
+      controller.add_socket(socket)
+      expect(controller.ready?).to be true
+      20.times { controller.piece_requested }
+      expect(controller.ready?).to be false
+      controller.piece_received
+      expect(controller.ready?).to be true
+    end
 
     describe "#tick" do
       it "sends a request if has sockets, needs pieces, and hasn't maxed connections" do
