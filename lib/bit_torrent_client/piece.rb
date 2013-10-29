@@ -51,8 +51,12 @@ module BitTorrentClient
       @blocks.select { |block, status| status == :incomplete }
     end
 
+    def has_incomplete_blocks?
+      @blocks.any? { |block, status| status == :incomplete }
+    end
+
     def next_byte_offset
-      incomplete_blocks.first.key
+      incomplete_blocks.keys.first
     end
 
     private

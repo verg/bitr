@@ -51,7 +51,6 @@ module BitTorrentClient
     end
 
     describe "block status" do
-
       it "intializes with an array incomplete blocks" do
         piece = Piece.new(0, sha, length)
         piece.blocks.each do |byte_offset, block_status|
@@ -82,6 +81,7 @@ module BitTorrentClient
         piece = Piece.new(0, sha, length)
         expect { piece.block_complete!("not a block offset") }.to raise_error KeyError
       end
+
       it "returns an array of incomplete blocks" do
         BLOCK_LENGTH = 4096
         piece = Piece.new(0, sha, length)
@@ -89,6 +89,13 @@ module BitTorrentClient
         piece.block_complete!("\x00\x00\x00\x00")
         expect(piece.incomplete_blocks.length).to eq 3
       end
+    end
+
+    it "knows if any of it's blocks are incomplete" do
+      BLOCK_LENGTH = 4096 * 4
+      piece = Piece.new(0, sha, length)
+      piece.block_requested!("\x00\x00\x00\x00")
+      expect(piece.has_incomplete_blocks?).to be_false
     end
   end
 end
