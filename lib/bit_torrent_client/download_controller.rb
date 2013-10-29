@@ -9,23 +9,27 @@ module BitTorrentClient
 
     def add_socket(socket)
       @sockets << socket
-
-      tick
     end
 
     def tick
-
+      send_request while ready?
     end
 
     def ready?
       has_sockets? && !download_complete? && !requests_maxed?
     end
 
-    def send_request(socket)
+    def send_request
       piece = next_piece
+      socket = first_available_peer(piece.index)
       socket.request_piece(piece.index,
                            piece.next_byte_offset,
                            BitTorrentClient.hex_block_bytes)
+      piece_requested
+    end
+
+    def first_available_peer(piece_index)
+      @sockets.find { |socket| socket.peer.has_piece? piece_index }
     end
 
     def piece_requested

@@ -62,9 +62,11 @@ module BitTorrentClient
     end
 
     describe "#tick" do
-      it "sends a request if has sockets, needs pieces, and hasn't maxed connections" do
-        controller.should_receive(:tick)
+      it "sends a request to the socket if controller is ready" do
+        socket.should_receive(:request_piece).exactly(20).times
+        socket.stub(:peer) { double("peer", :has_piece? => true) }
         controller.add_socket(socket)
+        controller.tick
       end
     end
 
