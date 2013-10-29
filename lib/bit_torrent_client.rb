@@ -91,7 +91,7 @@ module BitTorrentClient
             EM.next_tick {
               socket.request_piece(have_message.piece_index,
                                     "\x00\x00\x00\x00",
-                                    hex_block_bytes)
+                                    BitTorrentClient.hex_block_bytes)
             }
           end
         when :have
