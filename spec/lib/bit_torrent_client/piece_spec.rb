@@ -82,6 +82,13 @@ module BitTorrentClient
         piece = Piece.new(0, sha, length)
         expect { piece.block_complete!("not a block offset") }.to raise_error KeyError
       end
+      it "returns an array of incomplete blocks" do
+        BLOCK_LENGTH = 4096
+        piece = Piece.new(0, sha, length)
+        expect(piece.incomplete_blocks.length).to eq 4
+        piece.block_complete!("\x00\x00\x00\x00")
+        expect(piece.incomplete_blocks.length).to eq 3
+      end
     end
   end
 end

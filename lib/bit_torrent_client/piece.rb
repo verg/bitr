@@ -47,6 +47,14 @@ module BitTorrentClient
       @blocks[byte_offset] = :incomplete
     end
 
+    def incomplete_blocks
+      @blocks.select { |block, status| status == :incomplete }
+    end
+
+    def next_byte_offset
+      incomplete_blocks.first.key
+    end
+
     private
 
     def ensure_byte_offset_exists(offset)
