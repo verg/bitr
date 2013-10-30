@@ -40,7 +40,6 @@ module BitTorrentClient
 
       its "status is complete if all blocks are complete" do
         piece = Piece.new(0, sha, length)
-
         piece.blocks.each do |block|
           block.complete!
         end
@@ -63,7 +62,7 @@ module BitTorrentClient
 
     it "returns an array of incomplete blocks" do
       BLOCK_LENGTH = 4096
-      piece = Piece.new(0, sha, length)
+      piece = Piece.new(1, sha, length)
       expect(piece.incomplete_blocks.length).to eq 4
       block = piece.find_block(0)
       block.complete!
@@ -79,6 +78,7 @@ module BitTorrentClient
       block.incomplete!
       expect(piece.has_incomplete_blocks?).to be_true
     end
+
   end
 
 end

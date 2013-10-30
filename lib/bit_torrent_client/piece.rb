@@ -44,13 +44,15 @@ module BitTorrentClient
     private
 
     def generate_blocks
+      piece_offset = @length * @index
       @num_of_blocks.times do |index|
-        @blocks << Block.new(index)
+        block_offset = index * BitTorrentClient::BLOCK_LENGTH
+        @blocks << Block.new(block_offset, piece_offset + block_offset)
       end
     end
 
     def all_blocks_complete?
-       @blocks.none? { |block| !block.complete? }
+      @blocks.none? { |block| !block.complete? }
     end
 
     def calculate_num_of_blocks
