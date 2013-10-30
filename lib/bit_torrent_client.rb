@@ -25,7 +25,9 @@ module BitTorrentClient
       @torrent.announce_to_tracker
       @torrent.get_peers
       the_right_peer = @torrent.peers.select { |peer| peer.ip == "96.126.104.219" }.first
-      @torrent.connect_to(the_right_peer)
+      @torrent.peers.each do |peer|
+        @torrent.connect_to(peer)
+      end
       @torrent
     end
 
@@ -73,9 +75,9 @@ module BitTorrentClient
     end
 
     def connect_to(peer)
-      @socket = EM.connect(peer.ip, peer.port,  TCPClient,
+      socket = EM.connect(peer.ip, peer.port,  TCPClient,
                            {torrent: self, peer: peer })
-      @socket.exchange_handshake
+      socket.exchange_handshake
     end
 
 
@@ -94,9 +96,9 @@ module BitTorrentClient
         when :have
           socket.peer.has_piece_at message.piece_index
         when :piece
+          @download_controller.handle_piece_message(message)
           piece = @pieces.find(message.piece_index)
           piece.block_complete!(message.byte_offset)
-          @download_controller.handle_piece_message(message)
           @download_controller.tick
         end
       end
