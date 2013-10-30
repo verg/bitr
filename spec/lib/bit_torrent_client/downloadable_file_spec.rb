@@ -17,6 +17,30 @@ module BitTorrentClient
       expect(file.byte_size).to eq 1277987
     end
 
+    it "has a start_offset reflecting # of bytes from beginning of torrent" do
+      files = [single_file, multi_file]
+      offset = 0
+      files.map! do |file|
+        file['start_offset'] = offset
+        offset += file['byte_size']
+        DownloadableFile.new(file)
+      end
+      expect(files.first.start_offset).to eq 0
+      expect(files.last.start_offset).to eq single_file['byte_size']
+    end
+
+    it "has a byte range relative to the full torrent download" do
+      files = [single_file, multi_file]
+      offset = 0
+      files.map! do |file|
+        file['start_offset'] = offset
+        offset += file['byte_size']
+        DownloadableFile.new(file)
+      end
+      expect(files.first.byte_range).to eq 0...single_file['byte_size']
+      expect(files.last.byte_range).to eq single_file['byte_size']...(single_file['byte_size'] + multi_file['byte_size'])
+    end
+
     describe "#directories" do
       it "knows the directories the file lives in" do
         file = DownloadableFile.new(multi_file)
