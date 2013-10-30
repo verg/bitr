@@ -81,5 +81,23 @@ module BitTorrentClient
 
       expect(file.byte_overlap?(outside_range)).to be_false
     end
+
+    describe "#find_seek_point" do
+      it "returns zero if the starting byte is before the files byte range" do
+        starting_byte = 0
+        file = DownloadableFile.new("filename" => "name", "byte_size" => 2,
+                                    "start_offset" =>  1)
+        seek_point = file.find_seek_point(starting_byte)
+        expect(seek_point).to eq 0
+      end
+
+      it "returns a relative offset if the starting byte is inside the files byte range" do
+        starting_byte = 2
+        file = DownloadableFile.new("filename" => "name", "byte_size" => 3,
+                                    "start_offset" =>  1)
+        seek_point = file.find_seek_point(starting_byte)
+        expect(seek_point).to eq 1
+      end
+    end
   end
 end

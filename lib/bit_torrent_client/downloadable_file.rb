@@ -29,6 +29,14 @@ module BitTorrentClient
       overlaps?(other_byte_range)
     end
 
+    def find_seek_point(absolute_starting_byte)
+      if absolute_starting_byte < @start_offset
+        0
+      else
+        absolute_starting_byte - @start_offset
+      end
+    end
+
     private
 
     def overlaps?(other)
