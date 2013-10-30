@@ -25,6 +25,10 @@ module BitTorrentClient
       @start_offset + @byte_size
     end
 
+    def has_byte?(absolute_byte)
+      byte_range.include? absolute_byte
+    end
   end
-
 end
+
+# def contains_thing(absolute_offset)

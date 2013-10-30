@@ -64,5 +64,13 @@ module BitTorrentClient
         expect(file.full_path).to eq single_file['filename']
       end
     end
+
+    it "determines if an abosulte byte offsite is within the file" do
+      file = DownloadableFile.new(single_file)
+      byte_inside_file = 10
+      byte_outside_file = file.byte_size + 1
+      expect(file.has_byte?(byte_inside_file)).to be_true
+      expect(file.has_byte?(byte_outside_file)).to be_false
+    end
   end
 end

@@ -6,9 +6,7 @@ module BitTorrentClient
     end
 
     def write_empty_files
-
       @info_dictionary.files.each do |file|
-
         make_dirs(file.directories) if file.directories.any?
 
         File.open(file.full_path, 'w') do |f|
