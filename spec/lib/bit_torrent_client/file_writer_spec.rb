@@ -6,6 +6,13 @@ module BitTorrentClient
     let(:first_file) { {"filename" => "first_file", "byte_size" => 4} }
     let(:other_file) { { "filename" => "other_file", "byte_size" => 5 } }
 
+    it "knows of some files" do
+      file = DownloadableFile.new(first_file)
+      info_dictionary = double("info_dictionary", files: [file].flatten)
+      writer = FileWriter.new(info_dictionary)
+      expect(writer.files).to eq [file]
+    end
+
     describe "#write_empty_files" do
       it "writes a single empty file" do
         file = DownloadableFile.new(first_file)
@@ -57,6 +64,35 @@ module BitTorrentClient
         expect(empty_file.size).to eq 4
 
         `rm -r #{file.first.full_path}`
+      end
+    end
+
+    describe "writing specific bytes within a file" do
+      it "identifies files that contain the specified bytes" do
+        byte_range = 8..9
+        file_with_bytes = double("file", byte_overlap?: true)
+        file_outside_of_bytes = double("file", byte_overlap?: false)
+        info_dictionary = double("info_dictionary",
+                                 files: [file_with_bytes, file_outside_of_bytes])
+
+        writer = FileWriter.new(info_dictionary)
+        expect(writer.files_to_write(byte_range)).to eq [file_with_bytes]
+      end
+
+
+      xit "finds the relative offset to begin writing to a file" do
+        # byte_range = 3..4
+        # file = double("file", byte_overlap?: true, start_offset: 2, byte_size: 10)
+        # info_dictionary = double("info_dictionary", files: [file])
+
+        # writer = FileWriter.new(info_dictionary).
+      end
+
+      context "when writing to a single file" do
+        it ""
+      end
+
+      context "when writing to a multiple files" do
       end
     end
   end
