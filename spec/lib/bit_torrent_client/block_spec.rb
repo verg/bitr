@@ -57,6 +57,11 @@ module BitTorrentClient
           expect(block.absolute_start).to eq 0
           expect(block.absolute_end).to eq 16384
         end
+
+        it "has one" do
+          block = Block.new(byte_offset)
+          expect(block.byte_range).to eq 0...16384
+        end
       end
     end
   end
