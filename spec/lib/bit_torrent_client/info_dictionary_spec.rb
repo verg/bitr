@@ -43,8 +43,8 @@ module BitTorrentClient
     end
 
     context "multi-file torrents" do
-    let(:info_hash) { { "length"=>1277987, "name"=>"flag.jpg",
-                        "piece length"=>16384, "pieces"=> pieces } }
+      let(:info_hash) { { "length"=>1277987, "name"=>"flag.jpg",
+                          "piece length"=>16384, "pieces"=> pieces } }
 
       let(:info_hash) { {"files"=>
                          [{"length"=>14536192, "path"=>["content", "flag.jpg"]},
@@ -60,11 +60,13 @@ module BitTorrentClient
 
       it "creates a file for each file in the torrent" do
         DownloadableFile.should_receive(:new).once.with({ "byte_size" => 14536192,
-                                                        "filename" => "flag.jpg",
-                                                        "directories" => ["content"] } )
+                                                          "filename" => "flag.jpg",
+                                                          "directories" => ["content"],
+                                                          "start_offset" => 0 } )
         DownloadableFile.should_receive(:new).once.with("byte_size" => 56,
                                                         "filename" => "license.txt",
-                                                        "directories" => [])
+                                                        "directories" => [],
+                                                        "start_offset" => 14536192)
         InfoDictionary.new(info_hash)
       end
 

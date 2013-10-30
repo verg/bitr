@@ -31,10 +31,13 @@ module BitTorrentClient
 
     def create_files(args)
       if args.has_key?('files')
+        offset = 0
         args['files'].map do |file|
           name = file['path'].last
           directories = file['path'].take(file['path'].size - 1)
-          DownloadableFile.new("byte_size" => file['length'], "filename" => name, "directories" => directories)
+          file['start_offset'] = offset
+          offset += file['length']
+          DownloadableFile.new("byte_size" => file['length'], "filename" => name, "directories" => directories, "start_offset" => file['start_offset'])
         end
       else
         [ DownloadableFile.new("byte_size" => args['length'], "filename" => @name) ]
