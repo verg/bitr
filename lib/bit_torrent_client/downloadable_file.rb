@@ -25,8 +25,14 @@ module BitTorrentClient
       @start_offset + @byte_size
     end
 
-    def has_byte?(absolute_byte)
-      byte_range.include? absolute_byte
+    def byte_overlap?(other_byte_range)
+      overlaps?(other_byte_range)
+    end
+
+    private
+
+    def overlaps?(other)
+      byte_range.cover?(other.first) || other.cover?(byte_range.first)
     end
   end
 end

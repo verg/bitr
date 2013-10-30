@@ -67,10 +67,19 @@ module BitTorrentClient
 
     it "determines if an abosulte byte offsite is within the file" do
       file = DownloadableFile.new(single_file)
-      byte_inside_file = 10
-      byte_outside_file = file.byte_size + 1
-      expect(file.has_byte?(byte_inside_file)).to be_true
-      expect(file.has_byte?(byte_outside_file)).to be_false
+
+      overlaps_with_start = -1..0
+      overlaps_with_end = (file.byte_size - 1)..file.byte_size
+      within_file_range = 10..11
+      encompases_file = -1..file.byte_size
+      outside_range = file.byte_size..(file.byte_size + 1)
+
+      expect(file.byte_overlap?(overlaps_with_start)).to be_true
+      expect(file.byte_overlap?(overlaps_with_end)).to be_true
+      expect(file.byte_overlap?(within_file_range)).to be_true
+      expect(file.byte_overlap?(encompases_file)).to be_true
+
+      expect(file.byte_overlap?(outside_range)).to be_false
     end
   end
 end
