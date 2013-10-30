@@ -27,4 +27,5 @@ module BitTorrentClient
     end
 
   end
+  # BitTorrentClient::BLOCK_LENGTH)].pack("N")
 end
