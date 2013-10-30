@@ -12,7 +12,7 @@ module BitTorrentClient
       if @directories.any?
         @directories.join('/') << "/#{@filename}"
       else
-        @name
+        @filename
       end
     end
   end

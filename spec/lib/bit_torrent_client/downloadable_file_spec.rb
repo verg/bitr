@@ -37,7 +37,7 @@ module BitTorrentClient
 
       it "returns the filename for files not in directories" do
         file = DownloadableFile.new(single_file)
-        expect(file.directories).to eq []
+        expect(file.full_path).to eq single_file['filename']
       end
     end
   end
