@@ -8,7 +8,7 @@ module BitTorrentClient
       @sha = String(sha)
       @length = length
       @num_of_blocks = calculate_num_of_blocks
-      @blocks = {}
+      @blocks = []
       generate_blocks
     end
 
@@ -24,35 +24,17 @@ module BitTorrentClient
       status == :complete
     end
 
-    def calculate_num_of_blocks
-      @length / BitTorrentClient::BLOCK_LENGTH
-    end
-
-    def block_status(offset)
-      @blocks.fetch(offset){ raise KeyError, "no byte offset, #{offset}" }
-    end
-
-    def block_requested!(byte_offset)
-      ensure_byte_offset_exists(byte_offset)
-      @blocks[byte_offset] = :requested
-    end
-
-    def block_complete!(byte_offset)
-      ensure_byte_offset_exists(byte_offset)
-      @blocks[byte_offset] = :complete
-    end
-
-    def block_incomplete!(byte_offset)
-      ensure_byte_offset_exists(byte_offset)
-      @blocks[byte_offset] = :incomplete
+    def find_block(offset)
+      arg_error = -> { raise ArgumentError }
+      @blocks.find(arg_error) { |block| block.byte_offset == offset }
     end
 
     def incomplete_blocks
-      @blocks.select { |block, status| status == :incomplete }
+      @blocks.select { |block| block.incomplete? }
     end
 
     def has_incomplete_blocks?
-      @blocks.any? { |block, status| status == :incomplete }
+      @blocks.any? { |block| block.incomplete? }
     end
 
     def next_byte_offset
@@ -61,23 +43,19 @@ module BitTorrentClient
 
     private
 
-    def ensure_byte_offset_exists(offset)
-      raise KeyError, "no byte offset, #{offset}" unless @blocks.has_key?(offset)
-    end
-
     def generate_blocks
       @num_of_blocks.times do |index|
-        byte_offset = [(index * BitTorrentClient::BLOCK_LENGTH)].pack("N")
-        @blocks[byte_offset] = :incomplete
+        @blocks << Block.new(index)
       end
     end
 
     def all_blocks_complete?
-       @blocks.none? { |offset, status| status != :complete }
+       @blocks.none? { |block| !block.complete? }
     end
+
+    def calculate_num_of_blocks
+      @length / BitTorrentClient::BLOCK_LENGTH
+    end
+
   end
 end
-
-{ "\x00\x00\x00\x00" => :incomplete }
-{ "\x00\x00\x00\x00" => :requested }
-{ "\x00\x00\x00\x00" => :complete }

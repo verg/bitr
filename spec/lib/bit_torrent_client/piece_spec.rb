@@ -33,16 +33,16 @@ module BitTorrentClient
     end
 
     describe "piece status" do
-      it "has intializes with an incomplete status" do
+      it "intializes with an incomplete status" do
         piece = Piece.new(0, sha, length)
         expect(piece.status).to eq :incomplete
       end
 
-      its "staus can be set to complete" do
+      its "status is complete if all blocks are complete" do
         piece = Piece.new(0, sha, length)
 
-        piece.blocks.each do |byte_offset, block_status|
-          piece.block_complete!(byte_offset)
+        piece.blocks.each do |block|
+          block.complete!
         end
 
         expect(piece.status).to eq :complete
@@ -50,52 +50,35 @@ module BitTorrentClient
       end
     end
 
-    describe "block status" do
-      it "intializes with an array incomplete blocks" do
-        piece = Piece.new(0, sha, length)
-        piece.blocks.each do |byte_offset, block_status|
-          expect(block_status).to be :incomplete
-        end
-      end
+    it "finds a block by its index" do
+      piece = Piece.new(0, sha, length)
+      block = piece.find_block(0)
+      expect(block.byte_offset).to eq 0
+    end
 
-      its "blocks can be set to a requested status" do
-        piece = Piece.new(0, sha, length)
-        piece.block_requested!("\x00\x00\x00\x00")
-        expect(piece.block_status("\x00\x00\x00\x00")).to eq :requested
-      end
+    it "raises an error when trying to find a non-existant block" do
+      piece = Piece.new(0, sha, length)
+      expect { piece.find_block(20) }.to raise_error ArgumentError
+    end
 
-      its "blocks can be set to a complete status" do
-        piece = Piece.new(0, sha, length)
-        piece.block_complete!("\x00\x00\x00\x00")
-        expect(piece.block_status("\x00\x00\x00\x00")).to eq :complete
-      end
-
-      its "blocks can be set to a incomplete status" do
-        piece = Piece.new(0, sha, length)
-        piece.block_complete!("\x00\x00\x00\x00")
-        piece.block_incomplete!("\x00\x00\x00\x00")
-        expect(piece.block_status("\x00\x00\x00\x00")).to eq :incomplete
-      end
-
-      it "raises an error when trying to set a non-existant byte offset" do
-        piece = Piece.new(0, sha, length)
-        expect { piece.block_complete!("not a block offset") }.to raise_error KeyError
-      end
-
-      it "returns an array of incomplete blocks" do
-        BLOCK_LENGTH = 4096
-        piece = Piece.new(0, sha, length)
-        expect(piece.incomplete_blocks.length).to eq 4
-        piece.block_complete!("\x00\x00\x00\x00")
-        expect(piece.incomplete_blocks.length).to eq 3
-      end
+    it "returns an array of incomplete blocks" do
+      BLOCK_LENGTH = 4096
+      piece = Piece.new(0, sha, length)
+      expect(piece.incomplete_blocks.length).to eq 4
+      block = piece.find_block(0)
+      block.complete!
+      expect(piece.incomplete_blocks.length).to eq 3
     end
 
     it "knows if any of it's blocks are incomplete" do
       BLOCK_LENGTH = 4096 * 4
       piece = Piece.new(0, sha, length)
-      piece.block_requested!("\x00\x00\x00\x00")
+      block = piece.find_block(0)
+      block.complete!
       expect(piece.has_incomplete_blocks?).to be_false
+      block.incomplete!
+      expect(piece.has_incomplete_blocks?).to be_true
     end
   end
+
 end
