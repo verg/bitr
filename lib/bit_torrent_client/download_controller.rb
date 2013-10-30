@@ -16,11 +16,14 @@ module BitTorrentClient
     end
 
     def handle_piece_message(piece)
+      file = File.open('electro.mp3', 'a')
+      file.write(piece.block)
+      file.close
       piece_received
     end
 
     def ready?
-      has_sockets? && !download_complete? && !requests_maxed?
+      has_sockets? && !download_complete? && !requests_maxed? && !next_piece.nil?
     end
 
     def send_request
