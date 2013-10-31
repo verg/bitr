@@ -26,6 +26,7 @@ module BitTorrentClient
       @torrent.announce_to_tracker
       @torrent.get_peers
       the_right_peer = @torrent.peers.select { |peer| peer.ip == "96.126.104.219" }.first
+      # @torrent.connect_to(the_right_peer)
       @torrent.peers.each do |peer|
         @torrent.connect_to(peer)
       end
@@ -99,7 +100,9 @@ module BitTorrentClient
         when :piece
           @download_controller.handle_piece_message(message)
           piece = @pieces.find(message.piece_index)
-          piece.block_complete!(message.byte_offset)
+          # TODO: extract this unpacking
+          block = piece.find_block(message.byte_offset.unpack("N*").first)
+          block.complete!
           @download_controller.tick
         end
       end

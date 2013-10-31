@@ -16,7 +16,7 @@ module BitTorrentClient
     end
 
     def handle_piece_message(piece)
-      file = File.open('electro.mp3', 'a')
+      file = File.open('image.jpg', 'a')
       file.write(piece.block)
       file.close
       piece_received
@@ -31,7 +31,8 @@ module BitTorrentClient
       block = piece.next_block
       socket = first_available_peer(piece.index)
       socket.request_piece(piece.index,
-                           block.byte_offset,
+                           # TODO extract this packing
+                           [block.byte_offset].pack("N*"),
                            BitTorrentClient.hex_block_bytes)
       piece_requested
       block.requested!
