@@ -37,8 +37,8 @@ module BitTorrentClient
       @blocks.any? { |block| block.incomplete? }
     end
 
-    def next_byte_offset
-      incomplete_blocks.keys.first
+    def next_block
+      incomplete_blocks.first
     end
 
     private

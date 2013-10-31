@@ -79,6 +79,16 @@ module BitTorrentClient
       expect(piece.has_incomplete_blocks?).to be_true
     end
 
+    it "returns the first incomplete block in itself" do
+      BLOCK_LENGTH = 4096
+      piece = Piece.new(0, sha, length)
+      first_block = piece.next_block
+      expect(first_block.byte_offset).to eq 0
+      first_block.complete!
+      second_block = piece.next_block.byte_offset
+      expect(second_block).to eq 4096
+    end
+
   end
 
 end
