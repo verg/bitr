@@ -28,12 +28,13 @@ module BitTorrentClient
 
     def send_request
       piece = next_piece
+      block = piece.next_block
       socket = first_available_peer(piece.index)
       socket.request_piece(piece.index,
-                           piece.next_byte_offset,
+                           block.byte_offset,
                            BitTorrentClient.hex_block_bytes)
       piece_requested
-      piece.block_requested!(piece.next_byte_offset)
+      block.requested!
     end
 
     def first_available_peer(piece_index)
