@@ -4,7 +4,6 @@ require_relative "../../lib/bit_torrent_client/metainfo_parser"
 module BitTorrentClient
   describe BitTorrentClient do
     let(:torrent_file) {"spec/fixtures/flagfromserver.torrent"}
-    let(:song_file) {"spec/fixtures/desktops.torrent"}
 
     it "initializes with a torrent file" do
       EM.run do
@@ -16,24 +15,23 @@ module BitTorrentClient
         expect(torrent.bytes_left).to eq 1277987
         expect(torrent.peers).to_not be_empty
         EM::Timer.new(2) do
-          expect(torrent.pieces.complete.length).to be > 0
-          expect(torrent.pieces.incomplete.length).to be > 0
+          expect(torrent.pieces.complete.length).to eq 76
+          expect(torrent.pieces.incomplete.length).to eq 0
           EM.stop
         end
       end
     end
 
+    let(:pics_file) {"spec/fixtures/103.torrent"}
     it "downloads a multi-file torrent" do
       EM.run do
-        torrent = BitTorrentClient.start(song_file, {print_log: true})
-        expect(torrent.torrent_file).to eq(song_file)
+        torrent = BitTorrentClient.start(pics_file, {print_log: true})
+        expect(torrent.torrent_file).to eq(pics_file)
 
         expect(torrent.uploaded_bytes).to eq(0)
         expect(torrent.downloaded_bytes).to eq(0)
         expect(torrent.peers).to_not be_empty
         EM::Timer.new(500) do
-          expect(torrent.pieces.complete.length).to be > 0
-          expect(torrent.pieces.incomplete.length).to be > 0
           EM.stop
         end
       end
