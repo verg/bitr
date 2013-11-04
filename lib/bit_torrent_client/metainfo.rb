@@ -12,7 +12,6 @@ module BitTorrentClient
       @encoding = args["encoding"]
       @info_dictionary = args['info_dictionary'] || InfoDictionary.new(args['info'])
       @info_hash = create_info_hash(args['info'])
-      @uri_encoded_info_hash = URI.encode(@info_hash)
     end
 
     def download_size

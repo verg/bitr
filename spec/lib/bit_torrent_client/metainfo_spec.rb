@@ -52,11 +52,6 @@ module BitTorrentClient
       expect(metainfo.info_hash.size).to eq 20
     end
 
-    it "stores a URI encoded info hash of the info hash" do
-      metainfo = Metainfo.new(metainfo_hash)
-      expect(metainfo.uri_encoded_info_hash).to eq "%E5%8F%CA%C55%AB%13H-%96%C1W%FA1%1A3/k%FA%86"
-    end
-
     it "has pieces through it's info dictionary" do
       metainfo = Metainfo.new(metainfo_hash)
       expect(metainfo.pieces.size).to eq 1
