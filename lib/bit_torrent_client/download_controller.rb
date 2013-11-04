@@ -70,7 +70,8 @@ module BitTorrentClient
     end
 
     def next_piece
-      pieces.incomplete.find { |piece| piece.has_incomplete_blocks? }
+      possible_pieces = pieces.incomplete.select { |piece| piece.has_incomplete_blocks? }
+      possible_pieces.sample
     end
   end
 end
