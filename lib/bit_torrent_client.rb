@@ -26,10 +26,12 @@ module BitTorrentClient
       @torrent = Torrent.new(torrent)
       @torrent.announce_to_tracker
       @torrent.get_peers
-      # the_right_peer = @torrent.peers.select { |peer| peer.ip == "96.126.104.219" }.first
-      # @torrent.connect_to(the_right_peer)
       @torrent.peers.each do |peer|
-        @torrent.connect_to(peer)
+        begin
+          @torrent.connect_to(peer)
+        rescue EventMachine::ConnectionError
+          p "Bad peer #{peer}"
+        end
       end
       @torrent
     end
