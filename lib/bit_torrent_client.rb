@@ -57,6 +57,8 @@ module BitTorrentClient
       @my_port = MY_PORT
       @peers = []
       @have_messages = []
+      @file_writer = FileWriter.new(@metainfo.info_dictionary)
+      @file_writer.write_empty_files
     end
 
     def bytes_left
@@ -78,10 +80,9 @@ module BitTorrentClient
 
     def connect_to(peer)
       socket = EM.connect(peer.ip, peer.port,  TCPClient,
-                           {torrent: self, peer: peer })
+                          {torrent: self, peer: peer })
       socket.exchange_handshake
     end
-
 
     def handle_messages(messages, socket)
       messages.each do |message|
@@ -108,5 +109,6 @@ module BitTorrentClient
       end
       BitTorrentClient.log "===Batch of messages handled==="
     end
+
   end
 end

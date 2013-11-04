@@ -4,6 +4,7 @@ require_relative "../../lib/bit_torrent_client/metainfo_parser"
 module BitTorrentClient
   describe BitTorrentClient do
     let(:torrent_file) {"spec/fixtures/flagfromserver.torrent"}
+
     it "initializes with a torrent file" do
       EM.run do
         torrent = BitTorrentClient.start(torrent_file, {print_log: true})

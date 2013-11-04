@@ -1,6 +1,8 @@
 module BitTorrentClient
   class DownloadController
+
     attr_reader :sockets, :pieces, :pending_requests
+
     def initialize(pieces)
       @sockets = []
       @pieces = pieces
