@@ -18,6 +18,20 @@ module BitTorrentClient
       end
     end
 
+    def write(bytes_to_write, byte_range)
+      files_to_write(byte_range).each do |file|
+        seek_point = file.find_seek_point(byte_range.begin)
+        adjust_for_zero_index = 1
+
+        bytes_remaining = file.byte_size - seek_point - adjust_for_zero_index
+        bytes_in_current_file = bytes_to_write.slice!(0..bytes_remaining)
+        File.open(file.full_path, "r+") do |f|
+          f.seek(seek_point)
+          f.write bytes_in_current_file
+        end
+      end
+    end
+
     def files_to_write(byte_range)
       @files.select { |file| file.byte_overlap?(byte_range) }
     end
