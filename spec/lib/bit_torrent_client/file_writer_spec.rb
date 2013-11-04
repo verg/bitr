@@ -81,15 +81,6 @@ module BitTorrentClient
         expect(writer.files_to_write(byte_range)).to eq [file_with_bytes]
       end
 
-
-      xit "finds the relative offset to begin writing to a file" do
-        # byte_range = 3..4
-        # file = double("file", byte_overlap?: true, start_offset: 2, byte_size: 10)
-        # info_dictionary = double("info_dictionary", files: [file])
-
-        # writer = FileWriter.new(info_dictionary).
-      end
-
       context "when writing to a single file" do
         it "writes data to the correct range" do
           file = DownloadableFile.new(first_file)
@@ -109,7 +100,7 @@ module BitTorrentClient
         end
       end
 
-      context "when writing to a multiple files" do
+      context "when writing to multiple files" do
         it "writes data the to the correct file" do
           files = [DownloadableFile.new(first_file), DownloadableFile.new(other_file)]
           info_dictionary = double("info_dictionary", files: [files].flatten)
