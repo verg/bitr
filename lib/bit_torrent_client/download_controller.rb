@@ -17,11 +17,16 @@ module BitTorrentClient
       send_request while ready?
     end
 
-    def handle_piece_message(piece)
-      file = File.open('image.jpg', 'a')
-      file.write(piece.block)
-      file.close
-      piece_received
+    def handle_piece_message(piece_message, file_writer)
+      raise IndexError if @pending_requests < 1
+
+      piece = @pieces.find(piece_message.piece_index)
+      block = piece.find_block(piece_message.byte_offset.unpack("N*").first)
+      block.complete!
+
+      file_writer.write(piece_message.block, block.byte_range)
+
+      @pending_requests -= 1
     end
 
     def ready?
@@ -46,14 +51,6 @@ module BitTorrentClient
 
     def piece_requested
       @pending_requests += 1
-    end
-
-    def piece_received
-      raise IndexError if @pending_requests < 1
-      piece = @pieces.find(message.piece_index)
-      block = piece.find_block(message.byte_offset.unpack("N*").first)
-      block.complete!
-      @pending_requests -= 1
     end
 
     def requests_maxed?

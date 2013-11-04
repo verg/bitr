@@ -8,6 +8,7 @@ require_relative "bit_torrent_client/piece_collection"
 require_relative "bit_torrent_client/block"
 require_relative "bit_torrent_client/peer"
 require_relative "bit_torrent_client/downloadable_file"
+require_relative "bit_torrent_client/file_writer"
 require_relative "bit_torrent_client/announce_response"
 require_relative "bit_torrent_client/tcp_client"
 require_relative "bit_torrent_client/message_builder"
@@ -25,7 +26,7 @@ module BitTorrentClient
       @torrent = Torrent.new(torrent)
       @torrent.announce_to_tracker
       @torrent.get_peers
-      the_right_peer = @torrent.peers.select { |peer| peer.ip == "96.126.104.219" }.first
+      # the_right_peer = @torrent.peers.select { |peer| peer.ip == "96.126.104.219" }.first
       # @torrent.connect_to(the_right_peer)
       @torrent.peers.each do |peer|
         @torrent.connect_to(peer)
@@ -99,7 +100,7 @@ module BitTorrentClient
         when :have
           socket.peer.has_piece_at message.piece_index
         when :piece
-          @download_controller.handle_piece_message(message)
+          @download_controller.handle_piece_message(message, @file_writer)
           @download_controller.tick
         end
       end
