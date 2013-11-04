@@ -50,6 +50,9 @@ module BitTorrentClient
 
     def piece_received
       raise IndexError if @pending_requests < 1
+      piece = @pieces.find(message.piece_index)
+      block = piece.find_block(message.byte_offset.unpack("N*").first)
+      block.complete!
       @pending_requests -= 1
     end
 

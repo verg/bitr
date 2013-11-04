@@ -100,10 +100,6 @@ module BitTorrentClient
           socket.peer.has_piece_at message.piece_index
         when :piece
           @download_controller.handle_piece_message(message)
-          piece = @pieces.find(message.piece_index)
-          # TODO: extract this unpacking
-          block = piece.find_block(message.byte_offset.unpack("N*").first)
-          block.complete!
           @download_controller.tick
         end
       end
