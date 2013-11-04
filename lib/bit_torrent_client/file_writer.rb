@@ -21,10 +21,10 @@ module BitTorrentClient
     def write(bytes_to_write, byte_range)
       files_to_write(byte_range).each do |file|
         seek_point = file.find_seek_point(byte_range.begin)
-        adjust_for_zero_index = 1
 
-        bytes_remaining = file.byte_size - seek_point - adjust_for_zero_index
+        bytes_remaining = (file.byte_size - 1) - seek_point
         bytes_in_current_file = bytes_to_write.slice!(0..bytes_remaining)
+
         File.open(file.full_path, "r+") do |f|
           f.seek(seek_point)
           f.write bytes_in_current_file
