@@ -1,6 +1,9 @@
 require_relative "../../../lib/bit_torrent_client/metainfo"
 require_relative "../../../lib/bit_torrent_client/info_dictionary"
 require_relative "../../../lib/bit_torrent_client/piece"
+require_relative "../../../lib/bit_torrent_client/block"
+require_relative "../../../lib/bit_torrent_client/piece_collection"
+require_relative "../../../lib/bit_torrent_client/config"
 require_relative "../../../lib/bit_torrent_client/downloadable_file"
 
 module BitTorrentClient
@@ -11,6 +14,7 @@ module BitTorrentClient
                             "created by"=>"uTorrent/1640",
                             "creation date"=>1350935447,
                             "encoding"=>"UTF-8",
+                            'bencoded_info' => "foo",
                             "info"=> {"length"=>1277987,
                                       "name"=>"flag.jpg",
                                       "piece length"=>16384,
@@ -41,9 +45,9 @@ module BitTorrentClient
 
     it "creates an InfoDictonary with the file information" do
       InfoDictionary.should_receive(:new).with( {"length"=>1277987,
-                                                "name"=>"flag.jpg",
-                                                "piece length"=>16384,
-                                                "pieces"=> pieces } )
+                                                 "name"=>"flag.jpg",
+                                                 "piece length"=>16384,
+                                                 "pieces"=> pieces } )
       Metainfo.new(metainfo_hash)
     end
 
