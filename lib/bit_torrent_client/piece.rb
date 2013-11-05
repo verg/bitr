@@ -29,7 +29,13 @@ module BitTorrentClient
       @blocks.each do |block|
         bytes << block.read_bytes(file_reader)
       end
-      @sha == Digest::SHA1.new.digest(bytes)
+      piece_sha = Digest::SHA1.new.digest(bytes)
+      require 'pry'; binding.pry
+      if @sha == piece_sha
+        true
+      else
+        raise ArgumentError
+      end
     end
 
     def find_block(offset)
