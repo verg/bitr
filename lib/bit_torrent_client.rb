@@ -9,6 +9,7 @@ require_relative "bit_torrent_client/block"
 require_relative "bit_torrent_client/peer"
 require_relative "bit_torrent_client/downloadable_file"
 require_relative "bit_torrent_client/file_writer"
+require_relative "bit_torrent_client/file_reader"
 require_relative "bit_torrent_client/announce_response"
 require_relative "bit_torrent_client/tcp_client"
 require_relative "bit_torrent_client/message_builder"
@@ -62,6 +63,7 @@ module BitTorrentClient
       @have_messages = []
       @file_writer = FileWriter.new(@metainfo.info_dictionary)
       @file_writer.write_empty_files
+      @file_reader = FileReader.new(@metainfo.info_dictionary)
     end
 
     def bytes_left
@@ -102,7 +104,7 @@ module BitTorrentClient
         when :have
           socket.peer.has_piece_at message.piece_index
         when :piece
-          @download_controller.handle_piece_message(message, @file_writer)
+          @download_controller.handle_piece_message(message, @file_writer, @file_reader)
           @download_controller.tick
         end
       end

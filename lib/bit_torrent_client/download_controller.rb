@@ -17,7 +17,7 @@ module BitTorrentClient
       send_request while ready?
     end
 
-    def handle_piece_message(piece_message, file_writer)
+    def handle_piece_message(piece_message, file_writer, file_reader)
       raise IndexError if @pending_requests < 1
 
       piece = @pieces.find(piece_message.piece_index)
@@ -25,6 +25,8 @@ module BitTorrentClient
       block.complete!
 
       file_writer.write(piece_message.block, block.byte_range)
+
+      piece.verify(file_reader) if piece.complete?
 
       @pending_requests -= 1
     end
