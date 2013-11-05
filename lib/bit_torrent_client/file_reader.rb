@@ -18,7 +18,7 @@ module BitTorrentClient
         bytes_to_read = byte_range.end - file.start_offset
         File.open(file.full_path, "r") do |f|
           f.seek(seek_point)
-          bytes << f.read(bytes_to_read )
+          bytes << f.read(bytes_to_read)
         end
       end
       bytes
