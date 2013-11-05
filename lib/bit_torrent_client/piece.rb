@@ -24,6 +24,14 @@ module BitTorrentClient
       status == :complete
     end
 
+    def verify(file_reader)
+      bytes = ''
+      @blocks.each do |block|
+        bytes << block.read_bytes(file_reader)
+      end
+      @sha == Digest::SHA1.new.digest(bytes)
+    end
+
     def find_block(offset)
       arg_error = -> { raise ArgumentError }
       @blocks.find(arg_error) { |block| block.byte_offset == offset }

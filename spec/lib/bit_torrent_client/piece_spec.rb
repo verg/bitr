@@ -89,6 +89,26 @@ module BitTorrentClient
       expect(second_block).to eq 4096
     end
 
+    it "verifies itself" do
+      BLOCK_LENGTH = 4096
+      sha = Digest::SHA1.new.digest("\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x01")
+      piece = Piece.new(0, sha, length)
+      file_reader = double("file reader")
+
+      piece.blocks.each do |block|
+        block.stub(:read_bytes) { "\x00\x00\x00\x01" }
+      end
+
+      expect(piece.verify(file_reader)).to be_true
+
+      piece.blocks.each do |block|
+        block.stub(:read_bytes) { "\x01\x01\x01\x01" }
+      end
+
+      expect(piece.verify(file_reader)).to be_false
+    end
+
   end
+
 
 end
