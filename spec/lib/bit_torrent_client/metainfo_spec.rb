@@ -53,7 +53,7 @@ module BitTorrentClient
 
     it "stores an info hash as a SHA1 of the value of the bencoded info key" do
       metainfo = Metainfo.new(metainfo_hash)
-      expect(metainfo.info_hash.size).to eq 20
+      expect(metainfo.info_hash).to eq "foo"
     end
 
     it "has pieces through it's info dictionary" do
@@ -70,8 +70,5 @@ module BitTorrentClient
       metainfo = Metainfo.new(metainfo_hash)
       expect(metainfo.download_size).to eq(1277987)
     end
-
-    it "knows the amount of bytes uploaded"
-    it "knows the amount of bytes downloaded"
   end
 end
