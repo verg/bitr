@@ -10,6 +10,9 @@ module BitTorrentClient
       @byte_range = @absolute_start...@absolute_end
     end
 
+    def read_bytes(file_reader)
+      file_reader.read(@byte_range)
+    end
 
     def requested!
       @status = :requested
