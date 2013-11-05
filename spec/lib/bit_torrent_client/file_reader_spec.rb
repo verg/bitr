@@ -48,8 +48,8 @@ module BitTorrentClient
         end
       end
 
-      context "when writing to multiple files" do
-        it "writes data the to the correct file" do
+      context "when reading from multiple files" do
+        it "reads data from the correct file" do
           File.open(first_file['filename'], "w") do |f|
             f.write("\x00\x01\x02\x03")
           end
