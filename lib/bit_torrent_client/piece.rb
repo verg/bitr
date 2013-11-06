@@ -30,7 +30,6 @@ module BitTorrentClient
         bytes << block.read_bytes(file_reader)
       end
       piece_sha = Digest::SHA1.new.digest(bytes)
-      require 'pry'; binding.pry
       if @sha == piece_sha
         true
       else
@@ -39,6 +38,7 @@ module BitTorrentClient
     end
 
     def find_block(offset)
+      offset = offset.unpack("N*").first if offset.class == String
       arg_error = -> { raise ArgumentError }
       @blocks.find(arg_error) { |block| block.byte_offset == offset }
     end

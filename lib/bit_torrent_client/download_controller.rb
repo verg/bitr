@@ -21,7 +21,7 @@ module BitTorrentClient
       raise IndexError if @pending_requests < 1
 
       piece = @pieces.find(piece_message.piece_index)
-      block = piece.find_block(piece_message.byte_offset.unpack("N*").first)
+      block = piece.find_block(piece_message.byte_offset)
       block.complete!
 
       file_writer.write(piece_message.block, block.byte_range)
